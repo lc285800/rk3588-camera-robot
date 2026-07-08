@@ -1,0 +1,7 @@
+platform:
+  name: lubancat5
+  camera_device: /dev/video0
+  ros_domain_id: 20
+  pca9685_address: 0x40
+  # Run i2cdetect -l on the real board before setting this value.
+  i2c_bus: null

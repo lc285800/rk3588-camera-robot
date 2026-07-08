@@ -63,13 +63,19 @@
 | T-ENV-01 | 2026-07-08 | 通过 | LubanCat-5，Ubuntu 22.04.5 ARM64，3.8 GiB内存，时间同步正常 |
 | T-NET-01 | 2026-07-08 | 部分通过 | Mac到WSL和RK网络可达；RK SSH登录正常，WSL SSH需单独复核认证 |
 | T-NET-02 | 2026-07-08 | 待测试 | RK本机DDS已通过，不等同于WSL与RK跨机DDS |
-| T-BUILD-01 | 2026-07-08 | 进行中 | RK构建`lubanvision_vision`成功；测试2通过、1项修复后待回归；WSL构建待执行 |
+| T-BUILD-01 | 2026-07-08 | 进行中 | RK构建成功且3项测试全部通过；WSL构建待执行 |
 | T-CAM-01 | 2026-07-08 | 通过 | `/dev/video1`原生支持640x480 MJPEG/YUYV 30 FPS |
 | T-CAM-02 | 2026-07-08 | 进行中 | V4L2原始采集31秒、900帧通过；ROS发布30分钟尚未执行 |
+| T-CAM-02冒烟 | 2026-07-08 | 未通过 | 消息结构正确；可靠QoS约0.46 Hz，Best Effort可接收但观察到丢帧 |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式
 30分钟测试必须把日志和统计写入项目约定的持久目录。
+
+M06持久产物位于RK：`/root/lubanvision/artifacts/20260708/M06-camera-smoke/`。第一次尝试因
+`pkill -f`误匹配父命令而退出；第二次确认消息结构；QoS对照结果见`rate.txt`、
+`sensor-qos-rate.txt`和`logs/`。轻量订阅计数器因管道返回码处理错误，0帧结果只作为无效
+尝试保留，不作为性能结论。
 
 ## 8. 任务映射
 

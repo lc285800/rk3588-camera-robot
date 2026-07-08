@@ -121,10 +121,12 @@ APT因此拒绝解析`libavcodec-dev`、`libavutil-dev`、`libswscale-dev`等依
 ## 8. 当前代码与测试状态
 
 - `lubanvision_vision` 0.1.0已在RK完成`colcon build`。
-- `colcon test`正确发现3项测试。
-- Flake8和PEP257通过。
-- 版权测试因许可证简写不被Humble识别而失败；本地已补完整Apache 2.0头，尚待RK回归。
+- `colcon test`正确发现3项测试，版权、Flake8和PEP257全部通过。
+- 测试结果为3项、0错误、0失败、0跳过；Flake8仅输出依赖包元数据接口弃用警告。
 - ROS图像话题的尺寸、帧率和30分钟稳定性尚未验证。
 
-下一次唯一任务：同步最新版权头到RK，回归3项测试，然后运行相机节点验证
-`/camera/image_raw`。
+M06冒烟测试已确认`/camera/image_raw`为640x480、`bgr8`、步长1920。默认可靠QoS观测频率
+约0.46 Hz；切换到传感器Best Effort QoS后可以收到图像，但CLI报告丢失消息。OpenCV直接
+读取仍为27.82 FPS，因此当前问题集中在ROS原始图像发布、序列化或订阅测量链路。
+
+下一次唯一任务：为M06建立可重复的发布/接收计数探针，并以15 FPS执行QoS性能对照。

@@ -77,9 +77,30 @@
 
 ### ISSUE-20260708-08：ROS包版权测试失败
 
-- 状态：待回归。
+- 状态：已解决。
 - 环境：RK ROS 2 Humble，`lubanvision_vision` 0.1.0。
 - 现象：`colcon test`发现3项测试，Flake8和PEP257通过，`ament_copyright`报告许可证未知。
 - 根因：Humble的`ament_copyright`不识别简写`Licensed under the Apache License, Version 2.0`。
 - 修复：本地5个Python文件已替换为完整Apache 2.0标准版权头。
-- 下一步：同步到RK后清理该包测试结果并执行`colcon test-result --verbose`。
+- 回归：清理该包构建与安装缓存后重新构建，3项测试全部通过，0错误、0失败、0跳过。
+
+### ISSUE-20260708-09：ROS原始图像可靠QoS产生背压
+
+- 状态：处理中。
+- 现象：M06消息尺寸和编码正确，但默认可靠QoS下`ros2 topic hz`短时只观察到约0.46 Hz。
+- 对照：同一摄像头由Python OpenCV连续读取120帧，实测27.82 FPS，排除V4L2采集瓶颈。
+- 根因判断：640x480 BGR图像约0.88 MiB，可靠QoS和Python订阅处理造成发布链路背压。
+- 修复：发布者改用ROS 2标准`qos_profile_sensor_data`，即Best Effort传感器数据QoS。
+- 回归现状：发布者实际QoS确认为`BEST_EFFORT/VOLATILE`；`topic echo --qos-profile
+  sensor_data`能够收到640高的图像，但收到前报告丢失2条。轻量Python订阅计数器首次得到
+  0帧，测试脚本又因未启用`pipefail`误返回成功，结果无效。
+- 下一步：建立仓库内可测试的速率探针，降低发布频率到测试计划要求的15 FPS进行对照，
+  同时记录发布端与接收端计数；不再依赖临时内联脚本。
+
+### ISSUE-20260708-10：相机节点退出时重复关闭ROS上下文
+
+- 状态：修复待回归。
+- 现象：测试发送SIGINT或timeout后，`rclpy.shutdown()`报告`rcl_shutdown already called`。
+- 根因：信号处理已关闭上下文，`finally`再次无条件调用shutdown。
+- 修复：只在`rclpy.ok()`为真时调用`rclpy.shutdown()`。
+- 回归：同步RK后使用SIGINT退出，要求进程无Python traceback。

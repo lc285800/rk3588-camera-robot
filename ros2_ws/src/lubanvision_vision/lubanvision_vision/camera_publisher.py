@@ -17,6 +17,7 @@
 import cv2
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import Image
 
 
@@ -50,7 +51,9 @@ class CameraPublisher(Node):
         actual_width = int(self._capture.get(cv2.CAP_PROP_FRAME_WIDTH))
         actual_height = int(self._capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         actual_rate = self._capture.get(cv2.CAP_PROP_FPS)
-        self._publisher = self.create_publisher(Image, "/camera/image_raw", 10)
+        self._publisher = self.create_publisher(
+            Image, "/camera/image_raw", qos_profile_sensor_data
+        )
         self._timer = self.create_timer(1.0 / frame_rate, self._publish_frame)
         self.get_logger().info(
             f"Camera {device}: {actual_width}x{actual_height} at {actual_rate:.2f} FPS"
@@ -88,7 +91,8 @@ def main(args=None):
     finally:
         if node is not None:
             node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

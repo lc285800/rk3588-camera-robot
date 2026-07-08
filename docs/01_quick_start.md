@@ -34,15 +34,19 @@ export ROS_DOMAIN_ID=20
 - 4GB内存不安装GNOME、RViz和完整桌面。
 - RViz、图像观察和rosbag分析放在Windows/WSL。
 
-RK端基础依赖：
+RK端已验证可安全安装的基础依赖：
 
 ```bash
 sudo apt update
 sudo apt install -y ros-humble-ros-base ros-dev-tools python3-rosdep \
-  ros-humble-v4l2-camera ros-humble-image-transport \
-  ros-humble-cv-bridge ros-humble-camera-info-manager \
+  ros-humble-image-transport ros-humble-camera-info-manager \
   python3-opencv python3-smbus i2c-tools v4l-utils
 ```
+
+不要在当前Rockchip镜像上直接安装`ros-humble-v4l2-camera`或`ros-humble-cv-bridge`。
+Rockchip多媒体PPA的FFmpeg运行库带`+rkmpp`后缀，与Ubuntu标准开发包的精确版本依赖冲突。
+当前使用项目内的`lubanvision_vision/camera_publisher`直接构造ROS图像消息，不降级板卡
+多媒体栈。完整过程见[RK安装记录](07_rk_ros2_install.md)。
 
 WSL端保留已经安装的`ros-humble-desktop`，具体记录见
 [WSL2安装文档](06_wsl_ros2_install.md)。
@@ -72,20 +76,28 @@ PCA9685逻辑电源接3.3V，舵机电源接稳定5V，鲁班猫、PCA9685与舵
 
 ```bash
 v4l2-ctl --list-devices
-v4l2-ctl --device=/dev/video0 --list-formats-ext
+v4l2-ctl --device=/dev/video1 --list-formats-ext
 ls -l /dev/video*
 ```
 
-先选择摄像头原生支持的640×480、15或30 FPS格式。启动ROS 2相机：
+当前设备分配为：`/dev/video0`是板载HDMI RX，USB摄像头使用`/dev/video1`采集，
+`/dev/video2`是同一USB设备的第二个接口。已确认USB摄像头原生支持640×480 MJPEG和
+YUYV 30 FPS。
+
+构建并启动项目相机节点：
 
 ```bash
 source /opt/ros/humble/setup.bash
 export ROS_DOMAIN_ID=20
-ros2 run v4l2_camera v4l2_camera_node --ros-args \
-  -p video_device:=/dev/video0 \
-  -p image_size:="[640,480]" \
-  -p time_per_frame:="[1,15]" \
-  -p camera_frame_id:=camera_link
+cd /root/lubanvision/ros2_ws
+colcon build --symlink-install --packages-select lubanvision_vision
+source install/setup.bash
+ros2 run lubanvision_vision camera_publisher --ros-args \
+  -p video_device:=/dev/video1 \
+  -p image_width:=640 \
+  -p image_height:=480 \
+  -p frame_rate:=30.0 \
+  -p pixel_format:=MJPG
 ```
 
 在WSL中确认：
@@ -93,7 +105,7 @@ ros2 run v4l2_camera v4l2_camera_node --ros-args \
 ```bash
 export ROS_DOMAIN_ID=20
 ros2 topic list
-ros2 topic hz /image_raw
+ros2 topic hz /camera/image_raw
 rviz2
 ```
 

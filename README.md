@@ -39,8 +39,9 @@ Mac和Windows断开后，机器人仍能在鲁班猫5上独立运行。第一阶
 
 ## 仓库状态
 
-仓库只保留LubanVision相关内容。ROS 2代码将围绕相机、目标检测、云台控制和系统部署
-建立独立软件包。
+仓库只保留LubanVision相关内容。首个ROS 2包`lubanvision_vision`已经建立，当前实现
+不依赖`cv_bridge`的USB相机发布节点；其余接口、控制、硬件、描述和bringup包按半小时
+任务卡逐步建立。
 
 ## 文档
 
@@ -50,3 +51,6 @@ Mac和Windows断开后，机器人仍能在鲁班猫5上独立运行。第一阶
 - [问题记录](docs/04_issue_log.md)
 - [测试计划](docs/05_test_plan.md)
 - [WSL2 ROS 2安装记录](docs/06_wsl_ros2_install.md)
+- [RK3588 ROS 2安装与验证记录](docs/07_rk_ros2_install.md)
+- [RK3588 Clash代理与ROS下载记录](docs/rk3588_clash_proxy_ros.md)
+- [半小时任务执行手册](docs/08_execution_playbook.md)

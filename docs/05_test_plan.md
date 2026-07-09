@@ -63,11 +63,13 @@
 | T-ENV-01 | 2026-07-08 | 通过 | LubanCat-5，Ubuntu 22.04.5 ARM64，3.8 GiB内存，时间同步正常 |
 | T-NET-01 | 2026-07-08 | 部分通过 | Mac到WSL和RK网络可达；RK SSH登录正常，WSL SSH需单独复核认证 |
 | T-NET-01复核 | 2026-07-09 | 通过 | Mac可ping通`192.168.2.100`和`192.168.2.120`，WSL `2222`与RK `22`端口开放；SSH公钥免密登录WSL和RK通过 |
-| T-NET-02 | 2026-07-08 | 待测试 | RK本机DDS已通过，不等同于WSL与RK跨机DDS |
+| T-NET-02 | 2026-07-10 | 通过 | WSL2 NAT下默认multicast不可用；改用RK侧Fast DDS Discovery Server `192.168.2.120:11811`后，WSL可发现并订阅RK `/camera/image_raw` |
 | T-BUILD-01 | 2026-07-09 | 进行中 | RK构建成功且3项测试全部通过；WSL构建待执行 |
 | T-CAM-01 | 2026-07-08 | 通过 | `/dev/video1`原生支持640x480 MJPEG/YUYV 30 FPS |
-| T-CAM-02 | 2026-07-09 | 进行中 | V4L2原始采集31秒、900帧通过；ROS 15 FPS冒烟通过；30分钟稳定性尚未执行 |
+| T-CAM-02 | 2026-07-09 | 通过 | V4L2原始采集31秒、900帧通过；ROS 15 FPS冒烟通过；M07稳定性预跑暂停前正常，按用户验收口径通过 |
 | T-CAM-02冒烟 | 2026-07-09 | 通过 | C++ V4L2发布器640x480 `bgr8`、15 FPS、reliable QoS两轮短测通过，接收端15.06/15.09 FPS，异常帧0 |
+| T-CAM-02稳定性预跑 | 2026-07-09 | 通过 | M07测试按用户要求提前暂停；暂停前发布端记录到11700帧，30秒窗口均为450帧约15.00 FPS，`missed=0`，资源和温度稳定，用户确认视为通过 |
+| T-CAM-04/M08预检 | 2026-07-10 | 通过 | RK发布图像正常；WSL经Fast DDS Discovery Server发现`/camera/image_raw`，读取到`640x480 bgr8`样本，短测频率约15 Hz |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式
@@ -91,7 +93,32 @@ raw图像传输或切换Cyclone DDS对照；Cyclone安装暂被RK的`unattended-
 `lubanvision_camera_cpp`，直接使用V4L2 YUYV采集并转换为`bgr8`，不依赖OpenCV开发包。
 Fast DDS Best Effort接收存在随机丢帧；C++发布器和C++探针使用reliable QoS后，15 FPS两轮
 短测通过：发布端稳定15 FPS，接收端分别为15.06 FPS和15.09 FPS，`bad_frames=0`。M06完成，
-M07继续做30分钟稳定性。
+M07稳定性预跑按用户验收口径通过，继续M08跨机图像验证。
+
+M07首次稳定性测试产物位于RK
+`/root/lubanvision/artifacts/20260709/M07-camera-stability/`，本地摘要位于
+`artifacts/20260709/M07-camera-stability/result.md`。本次按用户要求提前暂停；暂停前相机链路
+正常，最后记录到11700帧、`missed=0`，CPU、内存和温度均稳定。2026-07-09用户确认该结果
+视为M07通过。
+
+M08首次验证产物位于`artifacts/20260709/M08-cross-machine-image/`。WSL当时Linux接口为
+`172.30.122.43/20`，Windows侧`192.168.2.100:2222`只是SSH进入WSL的端口转发入口。RK本机
+通过Fast DDS discovery server和`ROS_SUPER_CLIENT=True`可发现`/camera/image_raw`，但WSL
+同样配置仍不可见；WSL到RK的UDP `nc`测试未到达RK监听端口。M08受阻，建议启用WSL mirrored
+networking或建立真实UDP可达的DDS网络后重测。
+
+2026-07-10进一步处理：Windows SSH已可用；删除`.wslconfig`后WSL回到NAT模式，私网IP变为
+`172.30.127.238`，已修复Windows `2222`到WSL SSH的portproxy。尝试让Windows作为
+`192.168.2.0/24`与`172.30.112.0/20`之间的路由器，已启用接口Forwarding、`IPEnableRouter=1`
+和RemoteAccess服务，但RK仍无法访问WSL私网IP。当时判断若必须RK主动访问WSL私网，需要Windows
+重启验证全局路由是否生效，或改用其他非WSL NAT方案。
+
+2026-07-10复测通过：WSL到RK的UDP `nc`探测到达RK监听端口。RK启动Fast DDS Discovery Server
+`192.168.2.120:11811`和C++相机发布器后，WSL设置`ROS_DOMAIN_ID=20`、
+`ROS_DISCOVERY_SERVER=192.168.2.120:11811`、`ROS_SUPER_CLIENT=True`，`ros2 topic list -t`
+可见`/camera/image_raw [sensor_msgs/msg/Image]`；`ros2 topic echo --once`读取到
+`height=480`、`width=640`、`encoding=bgr8`；`ros2 topic hz`短测稳定约15 Hz。M08按该定向
+发现方案通过。RK主动访问WSL私网仍不通，作为网络约束记录，不阻塞后续M09。
 
 ## 8. 任务映射
 

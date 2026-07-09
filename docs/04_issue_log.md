@@ -113,3 +113,31 @@
 - 回归：同步RK后使用SIGINT退出，要求进程无Python traceback。
 - 2026-07-09回归：使用`timeout -s INT`结束相机节点，日志未出现Python traceback或
   `rcl_shutdown already called`。
+
+### ISSUE-20260709-11：WSL2 NAT阻塞默认跨机DDS图像发现
+
+- 状态：已绕过，M08通过；默认multicast和RK主动访问WSL私网仍不可用。
+- 环境：RK `192.168.2.120/24`，WSL Linux接口`172.30.122.43/20`，Windows/SSH入口
+  `192.168.2.100:2222`，ROS_DOMAIN_ID=20。
+- 现象：RK发布`/camera/image_raw`正常，RK本机可通过Fast DDS discovery server发现该话题；
+  WSL无法通过默认multicast或`ROS_DISCOVERY_SERVER=192.168.2.120:11811`发现该话题。
+- 最小复现：RK启动`v4l2_camera_publisher`；WSL执行`ros2 topic list`仅看到`/parameter_events`
+  和`/rosout`。RK启动ROS自带Fast DDS discovery server后，RK本机配合`ROS_SUPER_CLIENT=True`
+  可见`/camera/image_raw`，WSL仍不可见。
+- 网络证据：WSL可ping RK且可TCP连接RK SSH 22。2026-07-09首次`nc -u`探测未到达；2026-07-10
+  WSL重启并恢复portproxy后，WSL到RK UDP探测可到达RK监听端口。RK经Windows路由访问WSL私网
+  `172.30.127.238`仍失败。
+- 根因判断：当前WSL2 NAT网络不提供ROS 2 DDS所需的UDP/multicast可达性；`192.168.2.100`
+  是Windows侧地址，不是WSL Linux参与DDS的接口地址。
+- 解决：M08采用RK侧Fast DDS Discovery Server `192.168.2.120:11811`。RK相机发布器和WSL订阅
+  端统一设置`ROS_DOMAIN_ID=20`、`ROS_DISCOVERY_SERVER=192.168.2.120:11811`；WSL额外设置
+  `ROS_SUPER_CLIENT=True`。该方案下WSL可发现`/camera/image_raw`，可读取`640x480 bgr8`
+  图像样本，`ros2 topic hz`短测约15 Hz。
+- 后续：不要依赖默认multicast发现；不要直接关闭全部Windows防火墙。若将来需要RK主动连接WSL
+  私网服务，再处理Windows路由或迁移到支持mirrored networking的环境。
+- 2026-07-10补充：Windows 10 Home环境未验证到可用mirrored networking。删除`.wslconfig`后
+  WSL私网IP变更导致`2222`端口转发失效，已更新portproxy到`172.30.127.238:22`并恢复SSH。
+  尝试启用Windows三层转发：`以太网`和`vEthernet (WSL)`接口Forwarding已开启，
+  `IPEnableRouter=1`已写入注册表，RemoteAccess服务已启动；RK添加
+  `172.30.112.0/20 via 192.168.2.100`后仍无法访问WSL私网。当前M08不再等待Windows重启，
+  后续如需双向三层互访，再重启Windows验证路由开关或改用不依赖WSL2 NAT的网络/桥接方案。

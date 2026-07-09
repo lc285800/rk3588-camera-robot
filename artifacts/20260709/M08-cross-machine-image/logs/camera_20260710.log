@@ -1,0 +1,13 @@
+[INFO] [1783613622.427404214] [v4l2_camera_publisher]: Camera /dev/video1: 640x480 YUYV camera 30.00 FPS, publishing 15.00 FPS -> /camera/image_raw (reliable)
+[INFO] [1783613627.438381467] [v4l2_camera_publisher]: Published 75 frames in 5.01s (14.97 FPS), total=75, missed=0
+[INFO] [1783613632.438307749] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=150, missed=0
+[INFO] [1783613637.438227163] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=225, missed=0
+[INFO] [1783613642.438200387] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=300, missed=0
+[INFO] [1783613647.438121560] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=375, missed=0
+[INFO] [1783613652.444883250] [v4l2_camera_publisher]: Published 75 frames in 5.01s (14.98 FPS), total=450, missed=0
+[INFO] [1783613657.444647859] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=525, missed=0
+[INFO] [1783613662.444676908] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=600, missed=0
+[INFO] [1783613667.437819740] [v4l2_camera_publisher]: Published 75 frames in 4.99s (15.02 FPS), total=675, missed=0
+[INFO] [1783613672.437709803] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=750, missed=0
+[INFO] [1783613677.437593681] [v4l2_camera_publisher]: Published 75 frames in 5.00s (15.00 FPS), total=825, missed=0
+[INFO] [1783613680.005451326] [rclcpp]: signal_handler(SIGINT/SIGTERM)

@@ -1,0 +1,12 @@
+Host: evanliudeMacBook-Air.local
+System: Darwin 25.3.0 arm64
+Date: 2026-07-09 21:59:53 CST
+Repository: /Users/evanliu/Documents/robot
+Git HEAD before local changes: 9bc9e60
+ROS on Mac: ros2 and colcon not found in PATH
+WSL target: liu@192.168.2.100:2222
+RK target: root@192.168.2.120:22
+ROS_DOMAIN_ID: 20
+SSH auth: Mac id_ed25519 public key installed on WSL and RK
+RK ROS: Humble, colcon and ros2 available
+WSL ROS: Humble, colcon and ros2 available

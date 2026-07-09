@@ -1,12 +1,12 @@
 # 项目进展与状态
 
-最后更新：2026-07-08
+最后更新：2026-07-09
 
 ## 1. 当前结论
 
 项目处于**阶段P2：ROS摄像头链路**。基础架构、WSL环境、RK系统和ROS 2 Humble已经
-落地；USB摄像头的V4L2能力已验证。当前正在收口首个ROS 2包`lubanvision_vision`，尚未
-完成ROS图像话题和30分钟稳定性验收。
+落地；USB摄像头的V4L2能力已验证。M06 ROS图像冒烟测试已通过：RK使用C++ V4L2节点发布
+640x480 `bgr8`图像，15 FPS reliable QoS两轮短测稳定。下一步进入M07 30分钟稳定性验收。
 
 ## 2. 阶段视图
 
@@ -34,8 +34,8 @@
 | M03 | 安装并验证RK ROS 2 | 已完成 | ros-base、colcon、rosdep及本机DDS通过 |
 | M04 | 枚举USB摄像头 | 已完成 | `/dev/video1`格式表及900帧采集结果 |
 | M05 | 建立视觉包与测试基线 | 已完成 | 构建通过且3项静态测试全部通过 |
-| M06 | 发布ROS图像并冒烟测试 | 进行中 | 640x480图像、话题频率和样本字段正确 |
-| M07 | 完成摄像头稳定性测试 | 未开始 | 30分钟日志、FPS、丢帧、CPU和内存统计 |
+| M06 | 发布ROS图像并冒烟测试 | 已完成 | 640x480图像、话题频率和样本字段正确 |
+| M07 | 完成摄像头稳定性测试 | 进行中 | 30分钟日志、FPS、丢帧、CPU和内存统计 |
 | M08 | 验证WSL与RK跨机图像 | 未开始 | WSL订阅话题并在RViz显示图像 |
 | M09 | 定义目标观测接口 | 未开始 | `lubanvision_interfaces`构建和消息测试 |
 | M10 | 实现离线ArUco检测 | 未开始 | 静态样本正例、反例和遮挡测试 |
@@ -54,13 +54,17 @@
 
 ## 4. 当前任务卡
 
-**当前唯一任务：M06 发布ROS图像并冒烟测试。**
+**当前唯一任务：M07 完成摄像头稳定性测试。**
 
-- 输入：通过测试的`lubanvision_vision`、RK的`/dev/video1`。
-- 操作：运行相机节点，检查`/camera/image_raw`发布者、尺寸、编码和短时频率。
-- 完成：收到640x480、`bgr8`图像，短时话题频率稳定且节点无错误退出。
-- 失败：更新相机问题记录，保留节点日志和话题检查输出，不进入M07。
+- 输入：M06通过的`lubanvision_camera_cpp`、RK的`/dev/video1`。
+- 操作：以640x480、15 FPS、reliable QoS运行相机节点和接收探针30分钟，记录日志、FPS、
+  丢帧、CPU和内存。
+- 完成：30分钟内节点无错误退出，发布/接收频率稳定，异常帧为0，资源占用可接受。
+- 失败：更新相机问题记录，保留节点日志和资源采样输出，不进入M08。
 - 文档：更新本文件、测试计划、问题日志和`docs/07_rk_ros2_install.md`。
+- 2026-07-09恢复点：M06最终使用`lubanvision_camera_cpp/v4l2_camera_publisher`和
+  `lubanvision_camera_cpp/image_rate_probe`完成；Python raw图像路径因消息数组赋值约6.9 FPS
+  不再作为M06验收路径。
 
 ## 5. 已完成事实
 
@@ -70,8 +74,16 @@
 - USB摄像头使用`/dev/video1`，640x480 MJPEG/YUYV均支持30 FPS。
 - V4L2完成900帧、31秒采集，稳定约29.95 FPS，启动时丢弃1个缓冲区。
 - `lubanvision_vision`已在RK构建；版权、Flake8和PEP257共3项测试全部通过。
-- M06确认图像消息为640x480、`bgr8`、步长1920；默认可靠QoS短时仅约0.46 Hz。
-- 发布者改为传感器Best Effort QoS后，`topic echo`能够收到图像但报告丢失2条；M06仍在进行中。
+- `lubanvision_camera_cpp`已建立并在RK构建通过，使用V4L2 YUYV采集并转换为`bgr8`发布。
+- Python `sensor_msgs/Image.data`赋值921600字节时约6.9 msg/s，不能满足15 FPS raw图像发布。
+- 2026-07-09从Mac确认`192.168.2.100`和`192.168.2.120`可ping通，WSL SSH `2222`与RK SSH
+  `22`端口开放；已将Mac的SSH公钥安装到WSL和RK，BatchMode免密登录通过。
+- `config/platforms/lubancat5.yaml`的相机设备已修正为实测USB摄像头`/dev/video1`。
+- RK端`colcon test --packages-select lubanvision_vision lubanvision_camera_cpp`通过；
+  `colcon test-result`为3项测试、0错误、0失败、0跳过。
+- M06最终验收：C++发布器以640x480、`bgr8`、15 FPS、reliable QoS运行两轮短测，发布端均为
+  15.00 FPS左右，接收端分别为224帧/14.87秒=15.06 FPS、225帧/14.91秒=15.09 FPS，
+  `bad_frames=0`，SIGINT退出正常。
 
 ## 6. 更新纪律
 

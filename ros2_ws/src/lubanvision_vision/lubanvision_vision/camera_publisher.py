@@ -32,14 +32,19 @@ class CameraPublisher(Node):
         self.declare_parameter("frame_rate", 30.0)
         self.declare_parameter("pixel_format", "MJPG")
         self.declare_parameter("frame_id", "camera_link")
+        self.declare_parameter("stats_interval_sec", 5.0)
 
         device = self.get_parameter("video_device").value
         width = self.get_parameter("image_width").value
         height = self.get_parameter("image_height").value
         frame_rate = self.get_parameter("frame_rate").value
         pixel_format = self.get_parameter("pixel_format").value
+        stats_interval_sec = self.get_parameter("stats_interval_sec").value
 
         self._frame_id = self.get_parameter("frame_id").value
+        self._published_frames = 0
+        self._last_stats_frames = 0
+        self._last_stats_time = self.get_clock().now()
         self._capture = cv2.VideoCapture(device, cv2.CAP_V4L2)
         self._capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*pixel_format))
         self._capture.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -55,6 +60,10 @@ class CameraPublisher(Node):
             Image, "/camera/image_raw", qos_profile_sensor_data
         )
         self._timer = self.create_timer(1.0 / frame_rate, self._publish_frame)
+        if stats_interval_sec > 0.0:
+            self._stats_timer = self.create_timer(
+                stats_interval_sec, self._log_publish_stats
+            )
         self.get_logger().info(
             f"Camera {device}: {actual_width}x{actual_height} at {actual_rate:.2f} FPS"
         )
@@ -74,6 +83,21 @@ class CameraPublisher(Node):
         message.step = message.width * 3
         message.data = frame.tobytes()
         self._publisher.publish(message)
+        self._published_frames += 1
+
+    def _log_publish_stats(self):
+        now = self.get_clock().now()
+        elapsed = (now - self._last_stats_time).nanoseconds / 1e9
+        if elapsed <= 0.0:
+            return
+
+        frames = self._published_frames - self._last_stats_frames
+        self.get_logger().info(
+            f"Published {frames} frames in {elapsed:.2f}s "
+            f"({frames / elapsed:.2f} FPS), total={self._published_frames}"
+        )
+        self._last_stats_frames = self._published_frames
+        self._last_stats_time = now
 
     def destroy_node(self):
         self._capture.release()

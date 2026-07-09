@@ -62,11 +62,12 @@
 |---|---|---|---|
 | T-ENV-01 | 2026-07-08 | 通过 | LubanCat-5，Ubuntu 22.04.5 ARM64，3.8 GiB内存，时间同步正常 |
 | T-NET-01 | 2026-07-08 | 部分通过 | Mac到WSL和RK网络可达；RK SSH登录正常，WSL SSH需单独复核认证 |
+| T-NET-01复核 | 2026-07-09 | 通过 | Mac可ping通`192.168.2.100`和`192.168.2.120`，WSL `2222`与RK `22`端口开放；SSH公钥免密登录WSL和RK通过 |
 | T-NET-02 | 2026-07-08 | 待测试 | RK本机DDS已通过，不等同于WSL与RK跨机DDS |
-| T-BUILD-01 | 2026-07-08 | 进行中 | RK构建成功且3项测试全部通过；WSL构建待执行 |
+| T-BUILD-01 | 2026-07-09 | 进行中 | RK构建成功且3项测试全部通过；WSL构建待执行 |
 | T-CAM-01 | 2026-07-08 | 通过 | `/dev/video1`原生支持640x480 MJPEG/YUYV 30 FPS |
-| T-CAM-02 | 2026-07-08 | 进行中 | V4L2原始采集31秒、900帧通过；ROS发布30分钟尚未执行 |
-| T-CAM-02冒烟 | 2026-07-08 | 未通过 | 消息结构正确；可靠QoS约0.46 Hz，Best Effort可接收但观察到丢帧 |
+| T-CAM-02 | 2026-07-09 | 进行中 | V4L2原始采集31秒、900帧通过；ROS 15 FPS冒烟通过；30分钟稳定性尚未执行 |
+| T-CAM-02冒烟 | 2026-07-09 | 通过 | C++ V4L2发布器640x480 `bgr8`、15 FPS、reliable QoS两轮短测通过，接收端15.06/15.09 FPS，异常帧0 |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式
@@ -76,6 +77,21 @@ M06持久产物位于RK：`/root/lubanvision/artifacts/20260708/M06-camera-smoke
 `pkill -f`误匹配父命令而退出；第二次确认消息结构；QoS对照结果见`rate.txt`、
 `sensor-qos-rate.txt`和`logs/`。轻量订阅计数器因管道返回码处理错误，0帧结果只作为无效
 尝试保留，不作为性能结论。
+
+2026-07-09本地新增`image_rate_probe`，用于以传感器QoS轻量订阅`/camera/image_raw`并统计
+帧数、FPS和异常尺寸/编码帧；相机节点新增`stats_interval_sec`发布端计数日志。Mac本地完成
+Python编译检查和脚本语法检查；同步到RK后构建通过，3项静态测试全部通过。
+
+RK短时ROS回归未通过：15 FPS时发布端约3.71-6.75 FPS，探针20秒收到5帧；5 FPS时发布端
+稳定5 FPS，探针15秒收到2帧，40秒收到4帧。日志位于
+`/root/lubanvision/artifacts/20260709/M06-camera-smoke/logs/`。当前判断需继续排查Fast DDS
+raw图像传输或切换Cyclone DDS对照；Cyclone安装暂被RK的`unattended-upgrade`占用dpkg锁阻塞。
+
+随后确认瓶颈在Python raw `Image.data`赋值，921600字节消息构造约6.9 msg/s。新增
+`lubanvision_camera_cpp`，直接使用V4L2 YUYV采集并转换为`bgr8`，不依赖OpenCV开发包。
+Fast DDS Best Effort接收存在随机丢帧；C++发布器和C++探针使用reliable QoS后，15 FPS两轮
+短测通过：发布端稳定15 FPS，接收端分别为15.06 FPS和15.09 FPS，`bad_frames=0`。M06完成，
+M07继续做30分钟稳定性。
 
 ## 8. 任务映射
 

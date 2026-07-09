@@ -1,0 +1,25 @@
+python3 tools/network_check.py 192.168.2.100 192.168.2.120
+nc -vz -w 3 192.168.2.100 2222
+nc -vz -w 3 192.168.2.120 22
+ssh -o BatchMode=yes -o ConnectTimeout=5 -p 2222 liu@192.168.2.100 'hostname; uname -a; source /opt/ros/humble/setup.bash 2>/dev/null || true; echo ROS_DISTRO=${ROS_DISTRO:-none}'
+ssh -o BatchMode=yes -o ConnectTimeout=5 root@192.168.2.120 'hostname; uname -a; source /opt/ros/humble/setup.bash 2>/dev/null || true; echo ROS_DISTRO=${ROS_DISTRO:-none}; ls -l /dev/video* 2>/dev/null'
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N '' -C 'evanliu-macbook-lubanvision-20260709'
+ssh-copy-id -o StrictHostKeyChecking=accept-new -p 2222 liu@192.168.2.100
+ssh-copy-id -o StrictHostKeyChecking=accept-new -p 22 root@192.168.2.120
+ssh -o BatchMode=yes -o ConnectTimeout=5 -p 2222 liu@192.168.2.100 'hostname; whoami; source /opt/ros/humble/setup.bash 2>/dev/null || true; echo ROS_DISTRO=${ROS_DISTRO:-none}; command -v colcon || true; command -v ros2 || true'
+ssh -o BatchMode=yes -o ConnectTimeout=5 root@192.168.2.120 'hostname; whoami; source /opt/ros/humble/setup.bash 2>/dev/null || true; echo ROS_DISTRO=${ROS_DISTRO:-none}; command -v colcon || true; command -v ros2 || true; ls -l /dev/video* 2>/dev/null'
+tar --exclude='.git' --exclude='ros2_ws/build' --exclude='ros2_ws/install' --exclude='ros2_ws/log' --exclude='**/__pycache__' -czf - . | ssh -o BatchMode=yes root@192.168.2.120 'mkdir -p /root/lubanvision && tar -xzf - -C /root/lubanvision'
+ssh -o BatchMode=yes root@192.168.2.120 'find /root/lubanvision -name "._*" -print -delete'
+ssh -o BatchMode=yes root@192.168.2.120 'source /opt/ros/humble/setup.bash; cd /root/lubanvision/ros2_ws; colcon build --symlink-install --packages-select lubanvision_vision; colcon test --packages-select lubanvision_vision; colcon test-result --verbose'
+ssh -o BatchMode=yes root@192.168.2.120 'source /opt/ros/humble/setup.bash; export ROS_DOMAIN_ID=20; cd /root/lubanvision/ros2_ws; source install/setup.bash; timeout -s INT 28s ros2 run lubanvision_vision camera_publisher --ros-args -p video_device:=/dev/video1 -p image_width:=640 -p image_height:=480 -p frame_rate:=15.0 -p pixel_format:=MJPG -p stats_interval_sec:=5.0'
+ssh -o BatchMode=yes root@192.168.2.120 'source /opt/ros/humble/setup.bash; export ROS_DOMAIN_ID=20; cd /root/lubanvision/ros2_ws; source install/setup.bash; ros2 run lubanvision_vision image_rate_probe --ros-args -p topic:=/camera/image_raw -p duration_sec:=20.0 -p expected_width:=640 -p expected_height:=480 -p expected_encoding:=bgr8'
+ssh -o BatchMode=yes root@192.168.2.120 'v4l2-ctl -d /dev/video1 --set-fmt-video=width=640,height=480,pixelformat=MJPG --set-parm=15 --stream-mmap=4 --stream-count=150 --stream-to=/dev/null'
+ssh -o BatchMode=yes root@192.168.2.120 'apt-get install -y ros-humble-rmw-cyclonedds-cpp'
+ssh -o BatchMode=yes root@192.168.2.120 'source /opt/ros/humble/setup.bash; cd /root/lubanvision/ros2_ws; colcon build --symlink-install --packages-select lubanvision_camera_cpp'
+ssh -o BatchMode=yes root@192.168.2.120 'source /opt/ros/humble/setup.bash; export ROS_DOMAIN_ID=20; cd /root/lubanvision/ros2_ws; source install/setup.bash; ros2 run lubanvision_camera_cpp v4l2_camera_publisher --ros-args -p video_device:=/dev/video1 -p image_width:=640 -p image_height:=480 -p frame_rate:=15.0 -p stats_interval_sec:=5.0 -p reliability:=reliable'
+ssh -o BatchMode=yes root@192.168.2.120 'source /opt/ros/humble/setup.bash; export ROS_DOMAIN_ID=20; cd /root/lubanvision/ros2_ws; source install/setup.bash; ros2 run lubanvision_camera_cpp image_rate_probe --ros-args -p topic:=/camera/image_raw -p duration_sec:=15.0 -p expected_width:=640 -p expected_height:=480 -p expected_encoding:=bgr8 -p reliability:=reliable'
+ssh -o BatchMode=yes root@192.168.2.120 'source /opt/ros/humble/setup.bash; cd /root/lubanvision/ros2_ws; colcon test --packages-select lubanvision_vision lubanvision_camera_cpp; colcon test-result --verbose'
+python3 -m compileall -q tools ros2_ws/src/lubanvision_vision/lubanvision_vision
+bash -n scripts/build.sh
+bash -n scripts/test.sh
+git diff --check

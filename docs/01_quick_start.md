@@ -45,8 +45,9 @@ sudo apt install -y ros-humble-ros-base ros-dev-tools python3-rosdep \
 
 不要在当前Rockchip镜像上直接安装`ros-humble-v4l2-camera`或`ros-humble-cv-bridge`。
 Rockchip多媒体PPA的FFmpeg运行库带`+rkmpp`后缀，与Ubuntu标准开发包的精确版本依赖冲突。
-当前使用项目内的`lubanvision_vision/camera_publisher`直接构造ROS图像消息，不降级板卡
-多媒体栈。完整过程见[RK安装记录](07_rk_ros2_install.md)。
+当前M06验收使用项目内的`lubanvision_camera_cpp/v4l2_camera_publisher`直接读取V4L2 YUYV
+并发布ROS图像消息，不降级板卡多媒体栈。Python版`lubanvision_vision/camera_publisher`保留
+作低频调试样例。完整过程见[RK安装记录](07_rk_ros2_install.md)。
 
 WSL端保留已经安装的`ros-humble-desktop`，具体记录见
 [WSL2安装文档](06_wsl_ros2_install.md)。
@@ -90,14 +91,14 @@ YUYV 30 FPS。
 source /opt/ros/humble/setup.bash
 export ROS_DOMAIN_ID=20
 cd /root/lubanvision/ros2_ws
-colcon build --symlink-install --packages-select lubanvision_vision
+colcon build --symlink-install --packages-select lubanvision_camera_cpp lubanvision_vision
 source install/setup.bash
-ros2 run lubanvision_vision camera_publisher --ros-args \
+ros2 run lubanvision_camera_cpp v4l2_camera_publisher --ros-args \
   -p video_device:=/dev/video1 \
   -p image_width:=640 \
   -p image_height:=480 \
-  -p frame_rate:=30.0 \
-  -p pixel_format:=MJPG
+  -p frame_rate:=15.0 \
+  -p reliability:=reliable
 ```
 
 在WSL中确认：
@@ -107,6 +108,18 @@ export ROS_DOMAIN_ID=20
 ros2 topic list
 ros2 topic hz /camera/image_raw
 rviz2
+```
+
+在RK本机做短时频率探针：
+
+```bash
+ros2 run lubanvision_camera_cpp image_rate_probe --ros-args \
+  -p topic:=/camera/image_raw \
+  -p duration_sec:=15.0 \
+  -p expected_width:=640 \
+  -p expected_height:=480 \
+  -p expected_encoding:=bgr8 \
+  -p reliability:=reliable
 ```
 
 相机稳定运行30分钟后，才能进入视觉识别。

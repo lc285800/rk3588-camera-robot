@@ -21,6 +21,7 @@ setup(
     entry_points={
         "console_scripts": [
             "camera_publisher = lubanvision_vision.camera_publisher:main",
+            "image_rate_probe = lubanvision_vision.image_rate_probe:main",
         ],
     },
 )

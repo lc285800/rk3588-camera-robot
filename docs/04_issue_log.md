@@ -46,7 +46,7 @@
 
 ### ISSUE-20260708-05：Rockchip FFmpeg包阻塞ROS相机驱动安装
 
-- 状态：处理中。
+- 状态：修复待回归。
 - 环境：LubanCat-5，Ubuntu 22.04.5 ARM64，Rockchip multimedia PPA，ROS 2 Humble。
 - 现象：安装`ros-humble-v4l2-camera`或`ros-humble-cv-bridge`时，Ubuntu标准
   `libavcodec-dev`、`libavutil-dev`等要求精确版本，但板卡已安装带`+rkmpp`后缀的运行库。
@@ -84,23 +84,32 @@
 - 修复：本地5个Python文件已替换为完整Apache 2.0标准版权头。
 - 回归：清理该包构建与安装缓存后重新构建，3项测试全部通过，0错误、0失败、0跳过。
 
-### ISSUE-20260708-09：ROS原始图像可靠QoS产生背压
+### ISSUE-20260708-09：Python ROS原始图像发布性能不足
 
-- 状态：处理中。
+- 状态：已解决，保留Python节点但M06验收改用C++节点。
 - 现象：M06消息尺寸和编码正确，但默认可靠QoS下`ros2 topic hz`短时只观察到约0.46 Hz。
 - 对照：同一摄像头由Python OpenCV连续读取120帧，实测27.82 FPS，排除V4L2采集瓶颈。
-- 根因判断：640x480 BGR图像约0.88 MiB，可靠QoS和Python订阅处理造成发布链路背压。
-- 修复：发布者改用ROS 2标准`qos_profile_sensor_data`，即Best Effort传感器数据QoS。
+- 根因：640x480 BGR图像约0.88 MiB；RK上Python给`sensor_msgs/Image.data`赋值921600字节时
+  仅约6.9 msg/s，构造raw图像消息本身已低于15 FPS目标。Best Effort和Cyclone DDS不能解决
+  该发布端瓶颈。
+- 修复：新增`lubanvision_camera_cpp`，直接使用V4L2 YUYV采集，C++内转换为`bgr8`并发布标准
+  `sensor_msgs/Image`；发布器和探针支持`reliability`参数，M06使用reliable QoS验收。
 - 回归现状：发布者实际QoS确认为`BEST_EFFORT/VOLATILE`；`topic echo --qos-profile
   sensor_data`能够收到640高的图像，但收到前报告丢失2条。轻量Python订阅计数器首次得到
   0帧，测试脚本又因未启用`pipefail`误返回成功，结果无效。
-- 下一步：建立仓库内可测试的速率探针，降低发布频率到测试计划要求的15 FPS进行对照，
-  同时记录发布端与接收端计数；不再依赖临时内联脚本。
+- 修复补充：2026-07-09已新增`image_rate_probe`作为包内订阅计数探针；相机节点新增
+  `stats_interval_sec`发布端计数日志。
+- 回归：`lubanvision_camera_cpp`在RK构建通过；C++发布器以640x480、`bgr8`、15 FPS、reliable
+  QoS运行两轮短测，发布端稳定15 FPS，C++探针接收端分别为15.06 FPS和15.09 FPS，
+  `bad_frames=0`，SIGINT退出正常。
+- 预防措施：后续高带宽raw图像链路优先使用C++节点；Python节点可保留作低频调试或接口样例。
 
 ### ISSUE-20260708-10：相机节点退出时重复关闭ROS上下文
 
-- 状态：修复待回归。
+- 状态：已解决。
 - 现象：测试发送SIGINT或timeout后，`rclpy.shutdown()`报告`rcl_shutdown already called`。
 - 根因：信号处理已关闭上下文，`finally`再次无条件调用shutdown。
 - 修复：只在`rclpy.ok()`为真时调用`rclpy.shutdown()`。
 - 回归：同步RK后使用SIGINT退出，要求进程无Python traceback。
+- 2026-07-09回归：使用`timeout -s INT`结束相机节点，日志未出现Python traceback或
+  `rcl_shutdown already called`。

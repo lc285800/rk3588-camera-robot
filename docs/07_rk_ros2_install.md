@@ -114,19 +114,27 @@ v4l2-ctl -d /dev/video1 \
 FFmpeg开发包的精确版本，而板卡Rockchip multimedia PPA已提供带`+rkmpp`后缀的运行库。
 APT因此拒绝解析`libavcodec-dev`、`libavutil-dev`、`libswscale-dev`等依赖。
 
-项目不通过强制降级解决，以免破坏RK硬件多媒体环境。当前实现
+项目不通过强制降级解决，以免破坏RK硬件多媒体环境。最初实现
 `lubanvision_vision/camera_publisher`，使用Python OpenCV读取V4L2并直接构造
-`sensor_msgs/Image`。
+`sensor_msgs/Image`；M06实测发现Python raw图像消息构造约6.9 FPS，不足以满足15 FPS目标。
+当前M06验收路径改为`lubanvision_camera_cpp/v4l2_camera_publisher`：直接使用V4L2 YUYV采集，
+C++内转换为`bgr8`并发布标准ROS图像消息，不依赖OpenCV开发包或`cv_bridge`。
 
 ## 8. 当前代码与测试状态
 
 - `lubanvision_vision` 0.1.0已在RK完成`colcon build`。
-- `colcon test`正确发现3项测试，版权、Flake8和PEP257全部通过。
+- `lubanvision_camera_cpp` 0.1.0已在RK完成`colcon build`。
+- `colcon test`正确发现3项Python静态测试，版权、Flake8和PEP257全部通过。
 - 测试结果为3项、0错误、0失败、0跳过；Flake8仅输出依赖包元数据接口弃用警告。
 - ROS图像话题的尺寸、帧率和30分钟稳定性尚未验证。
 
-M06冒烟测试已确认`/camera/image_raw`为640x480、`bgr8`、步长1920。默认可靠QoS观测频率
-约0.46 Hz；切换到传感器Best Effort QoS后可以收到图像，但CLI报告丢失消息。OpenCV直接
-读取仍为27.82 FPS，因此当前问题集中在ROS原始图像发布、序列化或订阅测量链路。
+M06冒烟测试已确认`/camera/image_raw`为640x480、`bgr8`、步长1920。最终验收命令使用
+`lubanvision_camera_cpp/v4l2_camera_publisher`和`lubanvision_camera_cpp/image_rate_probe`，
+参数为15 FPS、reliable QoS。两轮短测接收端分别为15.06 FPS和15.09 FPS，`bad_frames=0`。
 
-下一次唯一任务：为M06建立可重复的发布/接收计数探针，并以15 FPS执行QoS性能对照。
+下一次唯一任务：M07 运行30分钟摄像头稳定性测试，记录发布/接收FPS、异常帧、CPU和内存。
+
+2026-07-09网络对照显示ROS HTTP包直连`packages.ros.org`比通过Mac Clash代理更快且更稳定；
+RK的`/etc/apt/apt.conf.d/80-ros-clash-proxy`已改为默认直连，并保留备份
+`80-ros-clash-proxy.bak-20260709-direct`。随后成功安装`ros-humble-rmw-cyclonedds-cpp`用于
+对照；Cyclone对当前raw图像接收没有改善，最终M06采用Fast DDS + reliable QoS。

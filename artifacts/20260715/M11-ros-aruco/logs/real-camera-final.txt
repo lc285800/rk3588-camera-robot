@@ -1,0 +1,14 @@
+Detector cumulative samples:
+frames=41 fps=6.81 p95_ms=24.02
+frames=71 fps=8.85 p95_ms=92.75
+frames=101 fps=10.08 p95_ms=161.48
+frames=131 fps=10.90 p95_ms=161.26
+frames=161 fps=11.48 p95_ms=161.48
+frames=191 fps=11.92 p95_ms=161.55
+frames=221 fps=12.26 p95_ms=161.61
+
+After discovery, frames increased by 30 every 2 seconds (15 FPS). All samples had detections=0 and
+errors=0 because no ArUco marker was present in the real camera view.
+
+Camera: 225 frames in 15 seconds, 15.00 FPS, missed=0.
+Detector peak sample: CPU 77.5%, memory 4.1%, RSS 167568 KiB.

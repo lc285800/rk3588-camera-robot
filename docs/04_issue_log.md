@@ -141,3 +141,19 @@
   `IPEnableRouter=1`已写入注册表，RemoteAccess服务已启动；RK添加
   `172.30.112.0/20 via 192.168.2.100`后仍无法访问WSL私网。当前M08不再等待Windows重启，
   后续如需双向三层互访，再重启Windows验证路由开关或改用不依赖WSL2 NAT的网络/桥接方案。
+
+### ISSUE-20260715-12：M11独立进程发现和图像QoS不稳定
+
+- 状态：已解决，保留Discovery Server启动等待约束。
+- 环境：RK ROS 2 Humble/Fast DDS，M11 ArUco节点，640x480 BGR图像。
+- 现象：默认发现、`ROS_LOCALHOST_ONLY=1`以及双方都设`ROS_SUPER_CLIENT=True`时，独立探针
+  发布82帧而检测节点收到0帧；Best Effort订阅真实Reliable相机时接收间歇，约4至5 FPS。
+- 无效尝试：在加载ROS环境前启用`set -u`导致`AMENT_TRACE_SETUP_FILES`未定义；停止
+  `ros2 run`外层PID未结束实际节点；两项均已在后续脚本修正并保留失败记录。
+- 根因：该网络必须沿用M08的Fast DDS角色配置；发布端是普通Discovery Server客户端，检测
+  订阅端设为SUPER_CLIENT。图像QoS必须与M06的Reliable发布路径一致。
+- 修复：节点图像订阅改为Reliable/Volatile；按Server、SUPER_CLIENT检测节点、普通相机发布
+  端顺序启动并等待发现。停止时先停相机，后停检测节点；捕获`ExternalShutdownException`。
+- 回归：真实相机发布225帧保持15 FPS；发现完成后检测节点每2秒稳定增加30帧，输入错误0，
+  无标记场景误检0。确定性同executor集成用于字段和时间戳验证，61条观测错误0。
+- 预防：M11后续启动文件固化DDS角色和Reliable QoS；性能窗口忽略发现建立前的累计时间。

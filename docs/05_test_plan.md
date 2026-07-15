@@ -72,6 +72,8 @@
 | T-CAM-04/M08预检 | 2026-07-10 | 通过 | RK发布图像正常；WSL经Fast DDS Discovery Server发现`/camera/image_raw`，读取到`640x480 bgr8`样本，短测频率约15 Hz |
 | T-VIS-01 | 2026-07-15 | 通过 | 生成式静态样本正确识别目标ID 23、四角点、中心、面积和误差方向；WSL/RK回归通过 |
 | T-VIS-02 | 2026-07-15 | 部分通过 | 无标记、非目标ID和50%遮挡均无有效观测；运动模糊与连续错误控制留待M11 ROS流验证 |
+| T-VIS-03 | 2026-07-15 | 通过 | ROS集成61条观测与4张调试图字段正确，源sec/nanosec/frame_id保持且序号不重复 |
+| T-VIS-05 | 2026-07-15 | 通过 | 真实相机发现后稳定处理15 FPS；约77% CPU、4.1%内存、RSS 168 MB、P95约162 ms |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式

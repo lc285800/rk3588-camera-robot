@@ -22,6 +22,9 @@ setup(
         "console_scripts": [
             "camera_publisher = lubanvision_vision.camera_publisher:main",
             "image_rate_probe = lubanvision_vision.image_rate_probe:main",
+            "aruco_detector = lubanvision_vision.aruco_node:main",
+            "aruco_integration_probe = "
+            "lubanvision_vision.aruco_integration_probe:main",
         ],
     },
 )

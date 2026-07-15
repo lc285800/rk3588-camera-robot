@@ -1,0 +1,8 @@
+colcon build --packages-select lubanvision_interfaces lubanvision_vision --symlink-install
+colcon test --packages-select lubanvision_vision --event-handlers console_direct+
+colcon test-result --verbose
+ros2 run lubanvision_vision aruco_integration_probe
+fastdds discovery -i 0 -l 192.168.2.120 -p 11834
+ROS_DISCOVERY_SERVER=192.168.2.120:11834 ROS_SUPER_CLIENT=True ros2 run lubanvision_vision aruco_detector --ros-args -p stats_interval_sec:=2.0
+ROS_DISCOVERY_SERVER=192.168.2.120:11834 ros2 run lubanvision_camera_cpp v4l2_camera_publisher --ros-args -p device:=/dev/video1 -p width:=640 -p height:=480 -p fps:=15.0 -p reliability:=reliable
+ps -p DETECTOR_PID -o pid=,pcpu=,pmem=,rss=,etime=

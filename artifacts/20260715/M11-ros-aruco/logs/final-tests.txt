@@ -1,0 +1,3 @@
+WSL: 11 tests, 0 errors, 0 failures, 0 skipped
+RK: 11 tests, 0 errors, 0 failures, 0 skipped
+Timestamp integration: passed=True published=64 observations=61 debug=4 bad=0 elapsed_sec=10.63

@@ -1,0 +1,17 @@
+Attempt 1: setup script failed before launch because `set -u` preceded ROS setup.bash.
+Error: AMENT_TRACE_SETUP_FILES: unbound variable.
+
+Attempt 2: separate synthetic publisher sent 82 frames; detector received 0. Stopping the ros2 wrapper
+PID did not stop its child process.
+
+Attempt 3: setting both processes as SUPER_CLIENT still produced 0 frames. This is not the supported
+M08 role assignment.
+
+Attempt 4: same-executor functional chain worked but processed 38 observations in 12.21 seconds with
+debug output on every frame; P95 was about 155 ms and the original 75-message threshold failed.
+
+Attempt 5: debug output throttled to every 15 frames. Functional integration passed after setting a
+60-observation/4-debug-image correctness window. This window is not used as the real-camera FPS metric.
+
+Attempt 6: real camera with Best Effort detector subscription was intermittent (92/300 frames). The
+subscription was changed to Reliable to match the M06 camera publisher.

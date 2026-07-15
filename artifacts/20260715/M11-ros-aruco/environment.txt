@@ -1,0 +1,8 @@
+Date: 2026-07-15
+Repository base commit: fea6ebd
+RK: lubancat, aarch64, ROS 2 Humble, Fast DDS
+WSL: DESKTOP-KSDDPU2, x86_64, ROS 2 Humble
+Camera: /dev/video1, 640x480 bgr8, 15 FPS, Reliable/Volatile
+ArUco: DICT_4X4_50, target ID 23
+Observation topic: /target/observation
+Debug topic: /target/debug_image, every 15 input frames

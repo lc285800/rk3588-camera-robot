@@ -39,7 +39,7 @@ Discovery Server定向发现方案完成：WSL可发现并订阅RK发布的`/cam
 | M07 | 完成摄像头稳定性测试 | 已完成 | 30分钟日志、FPS、丢帧、CPU和内存统计 |
 | M08 | 验证WSL与RK跨机图像 | 已完成 | WSL订阅话题并在RViz显示图像 |
 | M09 | 定义目标观测接口 | 已完成 | `lubanvision_interfaces`构建和消息测试 |
-| M10 | 实现离线ArUco检测 | 未开始 | 静态样本正例、反例和遮挡测试 |
+| M10 | 实现离线ArUco检测 | 已完成 | 静态样本正例、反例和遮挡测试 |
 | M11 | 接入ROS ArUco节点 | 未开始 | 观测、调试图、时间戳和性能统计 |
 | M12 | 实现可测试PID核心 | 未开始 | 方向、死区、积分和限速单元测试 |
 | M13 | 实现目标丢失状态机 | 未开始 | 跟踪、保持、回中状态测试 |
@@ -55,12 +55,12 @@ Discovery Server定向发现方案完成：WSL可发现并订阅RK发布的`/cam
 
 ## 4. 当前任务卡
 
-**当前唯一任务：M10 实现离线ArUco检测。**
+**当前唯一任务：M11 接入ROS ArUco节点。**
 
-- 输入：M09已确定的`TargetObservation`接口，ArUco静态正例、反例和遮挡样本需求。
-- 操作：实现与ROS传输解耦的ArUco检测核心，建立可重复生成的静态样本与单元测试。
-- 完成：目标ID和四角点识别正确；无标记、非目标ID和部分遮挡不会产生有效目标观测。
-- 失败：记录OpenCV版本/ArUco模块或算法问题，不进入M11 ROS流接入。
+- 输入：M10已验证的离线检测核心、M09目标观测接口和`/camera/image_raw`。
+- 操作：建立ROS ArUco节点，订阅图像并发布目标观测和调试图，保留源图像时间戳。
+- 完成：ROS流上的观测字段、时间戳、调试图正确，并记录RK的FPS、CPU、内存和延迟。
+- 失败：记录图像转换、QoS或性能问题，不进入M12 PID控制。
 - 文档：更新本文件、测试计划和问题日志。
 - 2026-07-09恢复点：M06最终使用`lubanvision_camera_cpp/v4l2_camera_publisher`和
   `lubanvision_camera_cpp/image_rate_probe`完成；Python raw图像路径因消息数组赋值约6.9 FPS
@@ -108,6 +108,10 @@ Discovery Server定向发现方案完成：WSL可发现并订阅RK发布的`/cam
   目标ID、中心坐标、像素/归一化误差、面积、置信度和检测状态。WSL amd64与RK arm64均构建
   成功，`ros2 interface show`及Python消息构造断言通过。证据位于
   `artifacts/20260715/M09-target-observation-interface/`。
+- 2026-07-15 M10完成：新增与ROS传输解耦的`aruco_detector`，使用固定生成的640x480静态
+  图像验证目标ID、四角点、像素/归一化误差、空白图、非目标ID、50%遮挡及非法输入。
+  WSL与RK各8项测试全部通过；两端与本地主仓关键文件SHA-256一致。证据位于
+  `artifacts/20260715/M10-offline-aruco/`。
 
 ## 6. 更新纪律
 

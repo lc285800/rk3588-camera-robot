@@ -1,0 +1,12 @@
+Starting >>> lubanvision_vision
+Finished <<< lubanvision_vision [1.66s]
+Summary: 1 package finished [2.28s]
+
+platform linux -- Python 3.10.12, pytest-6.2.5
+collected 8 items
+test/test_aruco_detector.py ..... [62%]
+test/test_copyright.py . [75%]
+test/test_flake8.py . [87%]
+test/test_pep257.py . [100%]
+8 passed, 2 warnings in 1.02s
+Summary: 8 tests, 0 errors, 0 failures, 0 skipped

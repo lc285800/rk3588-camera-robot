@@ -1,0 +1,12 @@
+git status --short --branch
+python3 -c 'import cv2; print(cv2.__version__, hasattr(cv2, "aruco"))'
+ssh -p 2222 liu@192.168.2.100 'python3 -c "import cv2; print(cv2.__version__, hasattr(cv2, \"aruco\"))"'
+ssh root@192.168.2.120 'python3 -c "import cv2; print(cv2.__version__, hasattr(cv2, \"aruco\"))"'
+scp -r -P 2222 ros2_ws/src/lubanvision_vision liu@192.168.2.100:/home/liu/lubanvision/ros2_ws/src/
+scp ros2_ws/src/lubanvision_vision/lubanvision_vision/aruco_detector.py root@192.168.2.120:/root/lubanvision/ros2_ws/src/lubanvision_vision/lubanvision_vision/
+scp ros2_ws/src/lubanvision_vision/test/test_aruco_detector.py root@192.168.2.120:/root/lubanvision/ros2_ws/src/lubanvision_vision/test/
+scp ros2_ws/src/lubanvision_vision/package.xml root@192.168.2.120:/root/lubanvision/ros2_ws/src/lubanvision_vision/package.xml
+colcon build --packages-select lubanvision_vision --symlink-install
+colcon test --packages-select lubanvision_vision --event-handlers console_direct+
+colcon test-result --verbose
+sha256sum aruco_detector.py test_aruco_detector.py

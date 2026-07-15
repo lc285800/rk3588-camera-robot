@@ -70,6 +70,8 @@
 | T-CAM-02冒烟 | 2026-07-09 | 通过 | C++ V4L2发布器640x480 `bgr8`、15 FPS、reliable QoS两轮短测通过，接收端15.06/15.09 FPS，异常帧0 |
 | T-CAM-02稳定性预跑 | 2026-07-09 | 通过 | M07测试按用户要求提前暂停；暂停前发布端记录到11700帧，30秒窗口均为450帧约15.00 FPS，`missed=0`，资源和温度稳定，用户确认视为通过 |
 | T-CAM-04/M08预检 | 2026-07-10 | 通过 | RK发布图像正常；WSL经Fast DDS Discovery Server发现`/camera/image_raw`，读取到`640x480 bgr8`样本，短测频率约15 Hz |
+| T-VIS-01 | 2026-07-15 | 通过 | 生成式静态样本正确识别目标ID 23、四角点、中心、面积和误差方向；WSL/RK回归通过 |
+| T-VIS-02 | 2026-07-15 | 部分通过 | 无标记、非目标ID和50%遮挡均无有效观测；运动模糊与连续错误控制留待M11 ROS流验证 |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式

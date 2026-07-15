@@ -1,0 +1,8 @@
+Date: 2026-07-15
+Repository base commit: b8a12e3
+Target ROS distribution: Humble
+WSL: DESKTOP-KSDDPU2, x86_64, Python 3.10.12, OpenCV 4.5.4, aruco available
+RK: lubancat, aarch64, Python 3.10.12, OpenCV 4.5.4, aruco available
+Mac: project control host; cv2 unavailable; not a ROS target build environment
+Dictionary: DICT_4X4_50
+Generated scene: 640x480, marker ID 23, marker size 160 pixels

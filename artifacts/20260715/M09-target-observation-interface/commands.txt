@@ -1,0 +1,5 @@
+python3 tools/network_check.py 192.168.2.100 192.168.2.120
+ssh -p 2222 liu@192.168.2.100 'source /opt/ros/humble/setup.bash; cd /home/liu/lubanvision/ros2_ws; colcon build --packages-select lubanvision_interfaces --symlink-install'
+ssh root@192.168.2.120 'source /opt/ros/humble/setup.bash; cd /root/lubanvision/ros2_ws; colcon build --packages-select lubanvision_interfaces --symlink-install'
+ros2 interface show lubanvision_interfaces/msg/TargetObservation
+python3 -c 'construct TargetObservation and assert ID, status, and normalized error fields'

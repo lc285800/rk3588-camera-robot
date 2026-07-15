@@ -64,7 +64,7 @@
 | T-NET-01 | 2026-07-08 | 部分通过 | Mac到WSL和RK网络可达；RK SSH登录正常，WSL SSH需单独复核认证 |
 | T-NET-01复核 | 2026-07-09 | 通过 | Mac可ping通`192.168.2.100`和`192.168.2.120`，WSL `2222`与RK `22`端口开放；SSH公钥免密登录WSL和RK通过 |
 | T-NET-02 | 2026-07-10 | 通过 | WSL2 NAT下默认multicast不可用；改用RK侧Fast DDS Discovery Server `192.168.2.120:11811`后，WSL可发现并订阅RK `/camera/image_raw` |
-| T-BUILD-01 | 2026-07-09 | 进行中 | RK构建成功且3项测试全部通过；WSL构建待执行 |
+| T-BUILD-01 | 2026-07-15 | 通过 | M09接口包在WSL amd64与RK arm64均构建成功；接口展开和Python消息构造断言通过 |
 | T-CAM-01 | 2026-07-08 | 通过 | `/dev/video1`原生支持640x480 MJPEG/YUYV 30 FPS |
 | T-CAM-02 | 2026-07-09 | 通过 | V4L2原始采集31秒、900帧通过；ROS 15 FPS冒烟通过；M07稳定性预跑暂停前正常，按用户验收口径通过 |
 | T-CAM-02冒烟 | 2026-07-09 | 通过 | C++ V4L2发布器640x480 `bgr8`、15 FPS、reliable QoS两轮短测通过，接收端15.06/15.09 FPS，异常帧0 |

@@ -1,0 +1,9 @@
+Date: 2026-07-15
+Mac repository branch: main
+Mac repository base commit: 9752da0
+WSL host: DESKTOP-KSDDPU2
+WSL architecture: x86_64
+RK host: lubancat
+RK architecture: aarch64
+RK camera device: /dev/video1 online
+ROS distribution: Humble

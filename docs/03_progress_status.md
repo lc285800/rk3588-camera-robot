@@ -1,6 +1,6 @@
 # 项目进展与状态
 
-最后更新：2026-07-10
+最后更新：2026-07-15
 
 ## 1. 当前结论
 
@@ -38,7 +38,7 @@ Discovery Server定向发现方案完成：WSL可发现并订阅RK发布的`/cam
 | M06 | 发布ROS图像并冒烟测试 | 已完成 | 640x480图像、话题频率和样本字段正确 |
 | M07 | 完成摄像头稳定性测试 | 已完成 | 30分钟日志、FPS、丢帧、CPU和内存统计 |
 | M08 | 验证WSL与RK跨机图像 | 已完成 | WSL订阅话题并在RViz显示图像 |
-| M09 | 定义目标观测接口 | 未开始 | `lubanvision_interfaces`构建和消息测试 |
+| M09 | 定义目标观测接口 | 已完成 | `lubanvision_interfaces`构建和消息测试 |
 | M10 | 实现离线ArUco检测 | 未开始 | 静态样本正例、反例和遮挡测试 |
 | M11 | 接入ROS ArUco节点 | 未开始 | 观测、调试图、时间戳和性能统计 |
 | M12 | 实现可测试PID核心 | 未开始 | 方向、死区、积分和限速单元测试 |
@@ -55,13 +55,13 @@ Discovery Server定向发现方案完成：WSL可发现并订阅RK发布的`/cam
 
 ## 4. 当前任务卡
 
-**当前唯一任务：M09 定义目标观测接口。**
+**当前唯一任务：M10 实现离线ArUco检测。**
 
-- 输入：M08已打通的`/camera/image_raw`，ROS 2 Humble接口包规范，后续ArUco检测需求。
-- 操作：建立`lubanvision_interfaces`，定义目标观测消息，补充接口构建和基础测试。
-- 完成：WSL/RK均可构建接口包，消息字段覆盖目标ID、像素偏差、面积、置信度、时间戳和状态。
-- 失败：记录接口字段争议或构建问题，不进入M10离线检测。
-- 文档：更新本文件、测试计划、问题日志和`docs/07_rk_ros2_install.md`。
+- 输入：M09已确定的`TargetObservation`接口，ArUco静态正例、反例和遮挡样本需求。
+- 操作：实现与ROS传输解耦的ArUco检测核心，建立可重复生成的静态样本与单元测试。
+- 完成：目标ID和四角点识别正确；无标记、非目标ID和部分遮挡不会产生有效目标观测。
+- 失败：记录OpenCV版本/ArUco模块或算法问题，不进入M11 ROS流接入。
+- 文档：更新本文件、测试计划和问题日志。
 - 2026-07-09恢复点：M06最终使用`lubanvision_camera_cpp/v4l2_camera_publisher`和
   `lubanvision_camera_cpp/image_rate_probe`完成；Python raw图像路径因消息数组赋值约6.9 FPS
   不再作为M06验收路径。
@@ -104,6 +104,10 @@ Discovery Server定向发现方案完成：WSL可发现并订阅RK发布的`/cam
   `192.168.2.120:11811`和WSL侧`ROS_SUPER_CLIENT=True`完成跨机发现与订阅；WSL读取到
   `640x480 bgr8`图像样本，频率短测约15 Hz。Windows 10 Home当前未提供可用mirrored
   networking，RK主动访问WSL私网仍不可用。
+- 2026-07-15 M09完成：新增`lubanvision_interfaces/msg/TargetObservation`，明确图像时间戳、
+  目标ID、中心坐标、像素/归一化误差、面积、置信度和检测状态。WSL amd64与RK arm64均构建
+  成功，`ros2 interface show`及Python消息构造断言通过。证据位于
+  `artifacts/20260715/M09-target-observation-interface/`。
 
 ## 6. 更新纪律
 

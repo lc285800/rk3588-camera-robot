@@ -18,4 +18,10 @@ setup(
     description="ROS-independent control primitives for LubanVision.",
     license="Apache-2.0",
     tests_require=["pytest"],
+    entry_points={
+        "console_scripts": [
+            "simulation_probe = "
+            "lubanvision_control.simulation_probe:main",
+        ],
+    },
 )

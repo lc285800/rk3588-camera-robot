@@ -79,6 +79,7 @@
 | T-CTL-04/PID输入 | 2026-07-16 | 通过 | NaN/Inf误差以及零、负数、NaN/Inf时间步均被明确拒绝 |
 | T-CTL-03 | 2026-07-16 | 通过 | 目标丢失后先保持，在超时边界进入回中；重新捕获请求清PID，默认无扫描状态 |
 | T-CTL-04/状态输入 | 2026-07-16 | 通过 | 非布尔可见状态、非法时间和时间倒退均被明确拒绝 |
+| T-CTL-05 | 2026-07-16 | 通过 | 正负0.6阶跃均1.85秒达到90%响应、2.75秒进入2%稳定带、0%超调、稳态误差0.002169 |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式
@@ -149,3 +150,8 @@ M12证据位于`artifacts/20260716/M12-pid-core/`。RK ROS 2 Humble环境中
 M13证据位于`artifacts/20260716/M13-target-loss-state/`。WSL amd64与RK arm64均完成
 `lubanvision_control`构建；每端本包27项测试全部通过，工作区汇总38项测试、0错误、
 0失败、0跳过。
+
+M14证据位于`artifacts/20260716/M14-simulated-gimbal/`。WSL amd64与RK arm64均完成
+`lubanvision_control`构建；每端本包33项测试全部通过，工作区汇总44项测试、0错误、
+0失败、0跳过。Mac、WSL和RK独立运行`simulation_probe`后，`metrics.json`、
+`step_response.csv`和`step_response.svg`的SHA-256逐项一致。

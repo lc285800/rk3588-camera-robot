@@ -1,0 +1,6 @@
+Host: lubancat arm64, ROS 2 Humble
+Control package: 33 passed, 2 dependency deprecation warnings
+Workspace summary: 44 tests, 0 errors, 0 failures, 0 skipped
+Positive step: rise=1.850s settle=2.750s overshoot=0.000% steady=0.002169 max_output=0.500 max_delta=0.080
+Negative step: rise=1.850s settle=2.750s overshoot=0.000% steady=0.002169 max_output=0.500 max_delta=0.080
+Artifact SHA-256 values matched checksums.txt.

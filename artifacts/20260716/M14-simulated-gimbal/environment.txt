@@ -1,0 +1,9 @@
+Date: 2026-07-16
+Starting commit: f1fc64e
+Mac: arm64, Python 3, source-tree simulation probe
+WSL: DESKTOP-KSDDPU2, x86_64, Ubuntu 22.04, ROS 2 Humble
+RK: lubancat, arm64, Ubuntu 22.04, ROS 2 Humble
+Simulation: dt=0.05 s, duration=8.0 s, actuator time constant=0.18 s
+Step inputs: +0.6 and -0.6 normalized image error
+PID: Kp=1.5, Ki=0.0, Kd=0.12, direction=-1
+Limits: deadband=0.003, output=0.5, per-cycle delta=0.08

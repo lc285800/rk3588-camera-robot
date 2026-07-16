@@ -15,12 +15,24 @@
 """Control primitives for LubanVision."""
 
 from .pid import PidConfig, PidController
+from .simulation import (
+    SimulationConfig,
+    SimulationSample,
+    StepMetrics,
+    StepResponse,
+    simulate_step,
+)
 from .tracking_state import TrackingDecision, TrackingState, TrackingStateMachine
 
 __all__ = [
     "PidConfig",
     "PidController",
+    "SimulationConfig",
+    "SimulationSample",
+    "StepMetrics",
+    "StepResponse",
     "TrackingDecision",
     "TrackingState",
     "TrackingStateMachine",
+    "simulate_step",
 ]

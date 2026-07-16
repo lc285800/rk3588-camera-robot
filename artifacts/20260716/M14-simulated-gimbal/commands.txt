@@ -1,0 +1,19 @@
+# Local deterministic probe
+PYTHONPATH=ros2_ws/src/lubanvision_control \
+  python3 -m lubanvision_control.simulation_probe \
+  --output-dir artifacts/20260716/M14-simulated-gimbal/data
+shasum -a 256 artifacts/20260716/M14-simulated-gimbal/data/*
+
+# WSL and RK package verification
+source /opt/ros/humble/setup.bash
+cd ~/lubanvision/ros2_ws
+colcon build --packages-select lubanvision_control --symlink-install
+colcon test --packages-select lubanvision_control --event-handlers console_direct+
+colcon test-result --verbose
+
+# Run independently on each Linux target
+source install/setup.bash
+output=$(mktemp -d /tmp/m14-check.XXXXXX)
+ros2 run lubanvision_control simulation_probe --output-dir "$output"
+sha256sum "$output"/*
+cat "$output/metrics.json"

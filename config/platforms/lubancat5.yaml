@@ -2,6 +2,12 @@ platform:
   name: lubancat5
   camera_device: /dev/video1
   ros_domain_id: 20
-  pca9685_address: 0x40
-  # Run i2cdetect -l on the real board before setting this value.
-  i2c_bus: null
+  servo_pwm:
+    physical_pin: 32
+    gpio_name: GPIO4_B6
+    gpio_number: 142
+    controller: pwm13
+    pinmux: m1
+    pwmchip: 3
+    channel: 0
+    period_ns: 20000000

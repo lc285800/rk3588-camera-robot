@@ -84,14 +84,13 @@ ros2 run lubanvision_control simulation_probe --output-dir /tmp/m14-check
 
 建议新增：
 
-- PCA9685 16路PWM模块一块。
-- 独立5V/3A稳压电源或降压模块。
+- 独立5V稳压电源或降压模块，额定电流需覆盖舵机启动和堵转需求。
 - 舵机云台支架；双轴阶段再增加一个SG90。
 - 杜邦线、端子和1000µF左右电解电容。
 - 打印的ArUco标记。
 
-PCA9685逻辑电源接3.3V，舵机电源接稳定5V，鲁班猫、PCA9685与舵机电源必须共地。
-禁止从鲁班猫3.3V引脚给SG90供电，也不要在接入鲁班猫前带电改线。
+首版使用物理Pin 32的`GPIO4_B6 / PWM13_M1`输出3.3V PWM信号。SG90电源接稳定的独立5V，
+舵机电源负极必须与鲁班猫GND共地。禁止从GPIO或鲁班猫3.3V引脚给SG90供电，也不要带电改线。
 
 ## 4. 第一阶段：只验证相机
 
@@ -156,22 +155,24 @@ ros2 run lubanvision_camera_cpp image_rate_probe --ros-args \
 4.使用模拟云台节点回报虚拟角度。
 5.记录误差随时间收敛曲线。
 
-软件闭环通过后再接PCA9685，避免把图像、控制和接线问题混在一起。
+软件闭环通过后再接SG90和独立5V电源，避免把图像、控制和接线问题混在一起。
 
-## 6. 第三阶段：PCA9685与SG90
+## 6. 第三阶段：SoC PWM与SG90
 
-在RK上确认I²C总线和设备树后执行：
+物理Pin 32的PWM13_M1设备树复用已启用。无外设软件检查：
 
 ```bash
-i2cdetect -l
-sudo i2cdetect -y <bus-number>
+cat /sys/kernel/debug/pwm
+grep 'pin 142 ' \
+  /sys/kernel/debug/pinctrl/pinctrl-rockchip-pinctrl/pinmux-pins
 ```
 
-正常情况下能看到PCA9685默认地址`0x40`。第一次舵机测试：
+已验证`pwmchip3/pwm0`可配置为20,000,000 ns周期（50Hz）和1,500,000 ns中位脉宽。
+第一次舵机测试：
 
 - 拆下云台负载或确保机械空间充足。
-- 角度限制暂设为70°～110°。
-- 先发90°中位，再分别发85°和95°。
+- 红线使用独立5V，负极与鲁班猫GND共地，信号线接物理Pin 32。
+- 先发1.5 ms中位，再分别发1.45 ms和1.55 ms。
 - 测量5V电源启动压降，确认RK没有重启。
 
 未完成限位测试前，不运行自动扫描。
@@ -180,7 +181,7 @@ sudo i2cdetect -y <bus-number>
 
 正式系统启动必须按以下顺序：
 
-1. 相机和I²C设备自检。
+1. 相机和PWM设备自检。
 2. 云台回到安全中位。
 3. 启动检测节点。
 4. 启动控制节点，但默认`tracking_enabled=false`。

@@ -1,0 +1,17 @@
+Initial:
+- pwmchip3 existed with one channel and no consumer.
+- Pin 142 was MUX UNCLAIMED.
+
+Active:
+- period=20000000 ns (50 Hz)
+- duty_cycle=1500000 ns (1.5 ms)
+- polarity=normal
+- enable=1
+- kernel consumer=sysfs, requested and enabled
+- Pin 142 owner=febf0010.pwm, function=pwm13, group=pwm13m1-pins
+
+Cleanup:
+- enable set to 0
+- pwm0 unexported successfully
+- no userspace PWM consumer remained
+- kernel retained the last period/duty and PWM pinctrl selection while disabled

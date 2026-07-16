@@ -1,0 +1,9 @@
+Date: 2026-07-17
+RK host: lubancat, Embedfire LubanCat-5, kernel 6.1.84
+Physical pin: 32
+SoC pin: GPIO4_B6
+Global GPIO number: 142
+Function: PWM13_M1
+PWM device: /sys/class/pwm/pwmchip3, platform febf0010.pwm
+External load: none
+Starting commit: 9e7bef7

@@ -1,0 +1,17 @@
+# Read-only PWM mapping inspection
+grep -nE '^(overlays|fdtfile|overlay_prefix)=' /boot/firmware/ubuntuEnv.txt
+cat /sys/kernel/debug/pwm
+grep 'pin 142 ' /sys/kernel/debug/pinctrl/pinctrl-rockchip-pinctrl/pinmux-pins
+
+# No-load software PWM verification on pwmchip3/pwm0
+echo 0 > /sys/class/pwm/pwmchip3/export
+echo 20000000 > /sys/class/pwm/pwmchip3/pwm0/period
+echo 1500000 > /sys/class/pwm/pwmchip3/pwm0/duty_cycle
+echo normal > /sys/class/pwm/pwmchip3/pwm0/polarity
+echo 1 > /sys/class/pwm/pwmchip3/pwm0/enable
+cat /sys/kernel/debug/pwm
+grep 'pin 142 ' /sys/kernel/debug/pinctrl/pinctrl-rockchip-pinctrl/pinmux-pins
+
+# Safe cleanup
+echo 0 > /sys/class/pwm/pwmchip3/pwm0/enable
+echo 0 > /sys/class/pwm/pwmchip3/unexport

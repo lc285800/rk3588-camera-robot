@@ -74,6 +74,11 @@
 | T-VIS-02 | 2026-07-15 | 部分通过 | 无标记、非目标ID和50%遮挡均无有效观测；运动模糊与连续错误控制留待M11 ROS流验证 |
 | T-VIS-03 | 2026-07-15 | 通过 | ROS集成61条观测与4张调试图字段正确，源sec/nanosec/frame_id保持且序号不重复 |
 | T-VIS-05 | 2026-07-15 | 通过 | 真实相机发现后稳定处理15 FPS；约77% CPU、4.1%内存、RSS 168 MB、P95约162 ms |
+| T-CTL-01 | 2026-07-16 | 通过 | PID默认方向为负：正归一化X误差产生负Pan增量，正负方向测试通过 |
+| T-CTL-02 | 2026-07-16 | 通过 | 死区、双向积分限幅、绝对输出限幅和每周期增量限幅测试通过 |
+| T-CTL-04/PID输入 | 2026-07-16 | 通过 | NaN/Inf误差以及零、负数、NaN/Inf时间步均被明确拒绝 |
+| T-CTL-03 | 2026-07-16 | 通过 | 目标丢失后先保持，在超时边界进入回中；重新捕获请求清PID，默认无扫描状态 |
+| T-CTL-04/状态输入 | 2026-07-16 | 通过 | 非布尔可见状态、非法时间和时间倒退均被明确拒绝 |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式
@@ -136,3 +141,11 @@ networking或建立真实UDP可达的DDS网络后重测。
 | M19-M20 | T-END-01至T-END-06 |
 
 M21双轴扩展不属于首版通过条件；M22负责整理已有测试证据，不替代任何未执行测试。
+
+M12证据位于`artifacts/20260716/M12-pid-core/`。RK ROS 2 Humble环境中
+`lubanvision_control`构建成功，本包收集16项测试并全部通过；工作区汇总为27项测试、
+0错误、0失败、0跳过。
+
+M13证据位于`artifacts/20260716/M13-target-loss-state/`。WSL amd64与RK arm64均完成
+`lubanvision_control`构建；每端本包27项测试全部通过，工作区汇总38项测试、0错误、
+0失败、0跳过。

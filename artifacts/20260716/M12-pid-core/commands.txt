@@ -1,0 +1,12 @@
+# Device checks
+python3 tools/network_check.py 192.168.2.100 192.168.2.120
+nc -zvw3 192.168.2.100 2222
+nc -zvw3 192.168.2.120 22
+ssh root@192.168.2.120 'hostname; uptime -p'
+
+# RK build and verification
+source /opt/ros/humble/setup.bash
+cd /root/lubanvision/ros2_ws
+colcon build --packages-select lubanvision_control --symlink-install
+colcon test --packages-select lubanvision_control --event-handlers console_direct+
+colcon test-result --verbose

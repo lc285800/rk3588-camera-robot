@@ -1,0 +1,6 @@
+Date: 2026-07-16
+Local controller: macOS arm64, /Users/evanliu/Documents/robot
+RK host: lubancat, 192.168.2.120, Ubuntu 22.04 arm64
+ROS: ROS 2 Humble
+Starting commit: cc40cb6
+Package: lubanvision_control 0.1.0

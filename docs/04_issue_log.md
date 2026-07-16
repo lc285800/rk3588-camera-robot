@@ -157,3 +157,26 @@
 - 回归：真实相机发布225帧保持15 FPS；发现完成后检测节点每2秒稳定增加30帧，输入错误0，
   无标记场景误检0。确定性同executor集成用于字段和时间戳验证，61条观测错误0。
 - 预防：M11后续启动文件固化DDS角色和Reliable QoS；性能窗口忽略发现建立前的累计时间。
+
+### ISSUE-20260716-13：macOS tar元数据干扰RK Python lint
+
+- 状态：已解决。
+- 环境：Mac向RK同步新`lubanvision_control`包，RK ROS 2 Humble。
+- 现象：首次tar同步生成`._setup.py`等AppleDouble文件，导致copyright、Flake8和PEP257
+  读取到非UTF-8内容或空字节。
+- 根因：macOS文件扩展属性随归档生成AppleDouble伴随文件，非项目源码问题。
+- 修复：远端同步后删除`._*`，清理该包build/install缓存后重新构建测试。
+- 回归：本包16项测试全部通过，0失败。
+- 预防：从macOS向Linux归档同步源码时禁用扩展属性，并在验收前检查和删除`._*`。
+
+### ISSUE-20260716-14：WSL SSH误用Mac本地用户名
+
+- 状态：已解决。
+- 环境：Mac连接Windows端口转发`192.168.2.100:2222`进入WSL Ubuntu 22.04。
+- 现象：TCP端口和SSH协议均正常，但使用`evanliu@192.168.2.100:2222`时公钥认证被拒绝。
+- 已排除：Windows主机在线、2222端口可达、WSL `sshd`为active、远端主机密钥未变化。
+- 根因：WSL Linux账号是`liu`，`evanliu`是Mac本地账号；公钥安装在
+  `/home/liu/.ssh/authorized_keys`，错误账号下自然无法匹配。
+- 修复：恢复使用`ssh -p 2222 liu@192.168.2.100`。
+- 回归：BatchMode免密登录成功；主机`DESKTOP-KSDDPU2`、ROS 2 Humble和colcon均可用。
+- 预防：快速入门固定记录三机用户名；认证失败时先核对目标用户，再检查密钥和端口转发。

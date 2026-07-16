@@ -1,0 +1,10 @@
+# WSL online and passwordless SSH verification
+ssh -p 2222 -o BatchMode=yes liu@192.168.2.100 \
+  'hostname; whoami; source /opt/ros/humble/setup.bash; echo $ROS_DISTRO'
+
+# Run on both WSL and RK after syncing lubanvision_control
+source /opt/ros/humble/setup.bash
+cd ~/lubanvision/ros2_ws
+colcon build --packages-select lubanvision_control --symlink-install
+colcon test --packages-select lubanvision_control --event-handlers console_direct+
+colcon test-result --verbose

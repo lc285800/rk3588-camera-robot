@@ -16,6 +16,10 @@ ssh -p 2222 liu@192.168.2.100
 ssh root@192.168.2.120
 ```
 
+WSL的Linux用户固定为`liu`；不要使用Mac用户名`evanliu`。Mac公钥位于默认
+`~/.ssh/id_ed25519`，已安装到`/home/liu/.ssh/authorized_keys`。如果端口可连接但公钥被
+拒绝，先核对远端用户名，再检查WSL中的`sshd`和`authorized_keys`权限。
+
 WSL和RK统一使用：
 
 ```bash

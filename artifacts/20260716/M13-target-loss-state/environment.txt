@@ -1,0 +1,5 @@
+Date: 2026-07-16
+WSL: liu@192.168.2.100:2222, DESKTOP-KSDDPU2, x86_64, ROS 2 Humble
+WSL private IP: 172.30.127.238
+RK: root@192.168.2.120, lubancat, arm64, ROS 2 Humble
+Starting commit: cc40cb6 plus uncommitted M12 changes

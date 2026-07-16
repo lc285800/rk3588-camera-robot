@@ -98,7 +98,59 @@ artifacts/
 | `02_design.md` | 接口或架构变化后 | 决策及其影响，不记录流水账 |
 | Git提交 | 一组通过验收的变更后 | 代码与对应文档一起提交 |
 
-## 8. 问题处理规则
+## 8. Git提交与推送
+
+本项目固定远端为：
+
+```text
+https://github.com/lc285800/rk3588-camera-robot.git
+```
+
+每张任务卡完成后按以下顺序收尾，禁止凭仓库目录名猜测远端，也不要在未检查差异时直接
+`git add -A`：
+
+```bash
+# 1. 确认当前分支、工作树和远端
+git status -sb
+git remote -v
+git branch -vv
+
+# 2. 检查本次范围、格式和敏感信息
+git diff --check
+git diff --stat
+git diff
+rg -n -i 'password|token|secret|BEGIN .* PRIVATE KEY' <本次文件> || true
+
+# 3. 只暂存当前任务相关文件并复核
+git add <明确的文件或目录>
+git diff --cached --check
+git diff --cached --stat
+
+# 4. 提交并推送
+git commit -m "Complete Mxx short description"
+git push
+
+# 5. 确认本地与远端一致
+git status -sb
+git log -1 --oneline --decorate
+```
+
+如果新工作区没有`origin`，先用GitHub CLI确认仓库身份，再只配置一次：
+
+```bash
+gh auth status
+gh repo view lc285800/rk3588-camera-robot \
+  --json nameWithOwner,url,defaultBranchRef,isPrivate
+git remote add origin https://github.com/lc285800/rk3588-camera-robot.git
+git push -u origin main
+```
+
+2026-07-16首次发布时，GitHub目标仓库为空，本地已有M00-M13完整提交历史，因此将本地
+`main`直接作为远端`main`首次推送，并建立`main -> origin/main`跟踪关系。后续普通提交只需
+`git push`。如果远端已存在不一致历史、工作树包含无关修改，或目标不是上述仓库，应停止并
+先确认，不得使用强制推送覆盖远端。
+
+## 9. 问题处理规则
 
 出现错误时按固定顺序处理：
 
@@ -109,7 +161,7 @@ artifacts/
 5. 记录无效尝试及原因，防止下次再次消耗时间。
 6. 涉及密钥、软件源、硬件电压和机械动作时，先验证安全边界。
 
-## 9. 本项目已沉淀的经验
+## 10. 本项目已沉淀的经验
 
 - LubanCat-5与LubanCat-5-V2镜像和设备树不能混用。
 - ROS旧固定密钥会过期，应优先使用官方`ros2-apt-source`配置包。
@@ -121,9 +173,10 @@ artifacts/
 - 测试报告可能残留旧结果，回归前核对源码、XML时间戳和构建缓存。
 - `pkill -f`可能匹配包含目标字符串的父级远端命令；先独立查询PID，再按精确PID停止进程。
 - ROS原始图像应使用传感器数据QoS；可靠QoS可能在大消息和慢订阅者下形成背压。
+- Git操作前先核对`origin`和GitHub仓库身份；没有远端不代表可以凭名称直接新建或推送。
 
-## 10. 当前恢复点
+## 11. 当前恢复点
 
-M11已经完成，当前任务为M12可测试PID核心。恢复时读取目标观测误差方向和安全约束，实现
-ROS无关的单轴PID；必须覆盖正负方向、死区、积分抗饱和、输出限幅、每周期增量限幅、重置和
-非法时间步。PID测试通过并记录参数语义后才进入M13目标丢失状态机。
+M12和M13已经完成并推送，当前任务为M14模拟云台闭环。恢复时使用ROS无关的PID核心和目标
+丢失状态机建立单轴Pan运动模型；必须验证正负阶跃稳定收敛、方向正确、输出和每周期增量
+限幅有效，并记录上升时间、超调和稳态误差后才进入M15硬件盘点。

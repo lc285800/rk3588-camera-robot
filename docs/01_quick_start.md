@@ -26,6 +26,11 @@ WSL和RK统一使用：
 export ROS_DOMAIN_ID=20
 ```
 
+项目GitHub远端固定为
+[`lc285800/rk3588-camera-robot`](https://github.com/lc285800/rk3588-camera-robot)。
+提交前必须先运行`git status -sb`和`git remote -v`核对范围与目标；完整提交、首次配置
+`origin`和推送流程见[半小时执行手册](08_execution_playbook.md#8-git提交与推送)。
+
 如果WSL看不到RK话题，优先检查Windows防火墙和WSL mirrored networking；不要通过关闭
 全部防火墙或关闭TLS校验解决网络问题。
 

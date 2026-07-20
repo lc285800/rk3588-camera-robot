@@ -1,0 +1,26 @@
+Host: lubancat
+
+Package build:
+Summary: 1 package finished
+
+Package test:
+collected 23 items
+test_copyright: pass
+test_flake8: pass
+test_pep257: pass
+test_sysfs_pwm: 20 pass
+Summary: 23 tests, 0 errors, 0 failures, 0 skipped
+
+Full workspace regression:
+lubanvision_control: 33 passed
+lubanvision_hardware: 23 passed
+lubanvision_vision: 11 passed
+Summary: 5 packages finished
+Summary: 67 tests, 0 errors, 0 failures, 0 skipped
+
+Warnings: SelectableGroups dict interface is deprecated; external test tooling only.
+Postcondition: /sys/class/pwm/pwmchip3/pwm0 remained unexported.
+
+SHA-256:
+f9dd05b2338d83f4c86651344f93329df3082df99c14d777d2873c3de967bff7  sysfs_pwm.py
+91528e11ff7ce9054130305e407b602b9cd156ab91b142490099a61e8275c160  test_sysfs_pwm.py

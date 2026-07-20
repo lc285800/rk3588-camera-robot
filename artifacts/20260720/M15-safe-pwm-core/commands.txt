@@ -1,0 +1,33 @@
+# Local syntax and source checks (Mac has no pytest in its system or bundled Python)
+python3 -m compileall -q ros2_ws/src/lubanvision_hardware
+bash -n scripts/build.sh scripts/test.sh
+git diff --check
+
+# Copy the new source package to WSL and RK without running it
+COPYFILE_DISABLE=1 tar -C ros2_ws/src/lubanvision_hardware -cf - . | \
+  ssh -p 2222 liu@192.168.2.100 \
+  'mkdir -p /home/liu/lubanvision/ros2_ws/src/lubanvision_hardware &&
+   tar -C /home/liu/lubanvision/ros2_ws/src/lubanvision_hardware -xf -'
+COPYFILE_DISABLE=1 tar -C ros2_ws/src/lubanvision_hardware -cf - . | \
+  ssh root@192.168.2.120 \
+  'mkdir -p /root/lubanvision/ros2_ws/src/lubanvision_hardware &&
+   tar -C /root/lubanvision/ros2_ws/src/lubanvision_hardware -xf -'
+
+# Run on each Linux target; source ROS before enabling nounset
+source /opt/ros/humble/setup.bash
+set -u
+cd ~/lubanvision/ros2_ws
+colcon build --symlink-install --packages-select lubanvision_hardware
+colcon test --packages-select lubanvision_hardware \
+  --event-handlers console_direct+
+colcon test-result --test-result-base build/lubanvision_hardware --verbose
+
+# Full workspace regression on each target
+colcon test --event-handlers console_cohesion+
+colcon test-result --verbose
+
+# Confirm source identity and that RK hardware remained untouched
+sha256sum \
+  src/lubanvision_hardware/lubanvision_hardware/sysfs_pwm.py \
+  src/lubanvision_hardware/test/test_sysfs_pwm.py
+test ! -d /sys/class/pwm/pwmchip3/pwm0

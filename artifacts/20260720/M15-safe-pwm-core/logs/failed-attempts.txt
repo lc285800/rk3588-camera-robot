@@ -1,0 +1,21 @@
+1. Mac test runner unavailable
+   - `python3 -m pytest` failed because the system Python has no pytest.
+   - The bundled workspace Python also has no pytest.
+   - No package was installed on Mac; target validation ran in WSL and RK ROS 2 environments.
+
+2. ROS environment loaded after nounset
+   - The first WSL and RK commands enabled `set -u` before sourcing
+     `/opt/ros/humble/setup.bash`.
+   - Both stopped at `AMENT_TRACE_SETUP_FILES: unbound variable` before build or test.
+   - Fix: source ROS first, then enable nounset.
+
+3. First package regression
+   - Functional tests passed, but PEP257 rejected the `__exit__` docstring with D401.
+   - Fix: changed the first line to imperative mood.
+
+4. Safety audit during the regression fix
+   - Export ownership was recorded only after waiting for the kernel channel directory.
+     A timeout could therefore omit the unexport cleanup request.
+   - Fix: record ownership immediately after a successful export write and add a timeout
+     regression proving that unexport is still attempted.
+   - Enabling also now attempts an immediate disable if the enable write reports an error.

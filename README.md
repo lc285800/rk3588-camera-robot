@@ -42,7 +42,8 @@ Mac和Windows断开后，机器人仍能在鲁班猫5上独立运行。第一阶
 仓库只保留LubanVision相关内容。`lubanvision_vision`提供离线ArUco检测和ROS目标观测节点；
 `lubanvision_camera_cpp`提供M06验收使用的低开销V4L2相机发布和速率探针，不依赖
 `cv_bridge`或OpenCV开发包。`lubanvision_interfaces`提供目标观测消息；
-`lubanvision_control`提供ROS无关的PID、目标丢失状态机和模拟云台闭环；硬件、描述和
+`lubanvision_control`提供ROS无关的PID、目标丢失状态机和模拟云台闭环；
+`lubanvision_hardware`提供默认禁用、严格脉宽限位和异常清理的sysfs PWM核心。描述和
 bringup包按半小时任务卡逐步建立。
 
 ## 文档

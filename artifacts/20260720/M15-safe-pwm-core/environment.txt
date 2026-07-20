@@ -1,0 +1,8 @@
+Date: 2026-07-20 Asia/Shanghai
+Starting commit: ba451d9
+Mac: arm64, source compilation only; neither available Python runtime had pytest
+WSL: DESKTOP-KSDDPU2, x86_64, Ubuntu 22.04, ROS 2 Humble, Python 3.10.12
+RK: lubancat, arm64, Ubuntu 22.04, kernel 6.1.84, ROS 2 Humble, Python 3.10.12
+Hardware access: none; pwmchip3/pwm0 remained unexported on RK
+Provisional pulse bounds: 1,450,000..1,550,000 ns, center 1,500,000 ns
+Period: 20,000,000 ns / 50 Hz

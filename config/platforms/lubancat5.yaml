@@ -11,3 +11,8 @@ platform:
     pwmchip: 3
     channel: 0
     period_ns: 20000000
+    center_ns: 1500000
+    min_pulse_ns: 1450000
+    max_pulse_ns: 1550000
+    calibration_status: provisional_smoke_only
+    enabled_by_default: false

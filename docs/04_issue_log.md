@@ -32,11 +32,14 @@
 - 结果：设备树确认为`Embedfire LubanCat-5`，系统为Ubuntu 22.04.5 LTS ARM64，内核
   `6.1.84`；内存、存储和时间同步正常。
 
-### ISSUE-20260708-03：WSL与RK跨机DDS待验证
+### ISSUE-20260708-03：WSL与RK跨机DDS验证
 
-- 状态：待测试。
-- 方案：首先使用同网段multicast；失败时检查Windows防火墙和mirrored networking，再
-  考虑Fast DDS discovery server。禁止直接关闭全部防火墙。
+- 状态：已解决，采用定向发现方案。
+- 结果：默认multicast受WSL2 NAT限制；M08改用RK侧Fast DDS Discovery Server
+  `192.168.2.120:11811`后，WSL可以发现并订阅RK的`/camera/image_raw`，读取到
+  `640x480 bgr8`样本且短测约15 Hz。
+- 约束：RK主动访问WSL私网仍不可用，但不影响当前RK发布、WSL订阅的工作流；禁止通过关闭
+  全部Windows防火墙规避该约束。
 
 ### ISSUE-20260708-04：舵机PWM路线和安全范围未知
 
@@ -49,15 +52,16 @@
 
 ### ISSUE-20260708-05：Rockchip FFmpeg包阻塞ROS相机驱动安装
 
-- 状态：修复待回归。
+- 状态：已绕过并完成回归。
 - 环境：LubanCat-5，Ubuntu 22.04.5 ARM64，Rockchip multimedia PPA，ROS 2 Humble。
 - 现象：安装`ros-humble-v4l2-camera`或`ros-humble-cv-bridge`时，Ubuntu标准
   `libavcodec-dev`、`libavutil-dev`等要求精确版本，但板卡已安装带`+rkmpp`后缀的运行库。
 - 已排除：ROS基础环境、V4L2设备和摄像头本身正常；640x480 MJPEG 30 FPS原始采集通过。
 - 约束：不得直接强制降级或删除Rockchip多媒体运行库，以免破坏板卡硬件编解码环境。
-- 当前方案：已建立`lubanvision_vision/camera_publisher`，使用Python OpenCV读取V4L2并
-  直接构造`sensor_msgs/Image`，不依赖`cv_bridge`。
-- 待验证：ROS图像话题和30分钟稳定性通过后，才能确认该绕行方案可关闭此问题。
+- 最终方案：M06验收改用`lubanvision_camera_cpp/v4l2_camera_publisher`，直接读取V4L2
+  YUYV并发布`bgr8`，不依赖`cv_bridge`或OpenCV开发包。Python节点只保留为低频调试样例。
+- 回归：C++链路两轮15 FPS冒烟测试通过，M07稳定性预跑在暂停前累计11700帧、`missed=0`，
+  且已按用户验收口径通过。因此无需改动Rockchip多媒体运行库，本问题关闭。
 
 ### ISSUE-20260708-06：ROS旧签名密钥过期
 

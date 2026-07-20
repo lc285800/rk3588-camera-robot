@@ -1,0 +1,68 @@
+# Precheck on RK
+test -e /dev/video1
+test -e /dev/nvme0
+test ! -d /sys/class/pwm/pwmchip3/pwm0
+sha256sum \
+  /root/lubanvision/ros2_ws/src/lubanvision_hardware/lubanvision_hardware/sysfs_pwm.py
+
+# Execute only the already smoke-tested three-point range through project code
+PYTHONPATH=/root/lubanvision/ros2_ws/src/lubanvision_hardware python3 - <<'PY'
+import time
+from lubanvision_hardware.sysfs_pwm import ServoPwmConfig, SysfsPwmChannel
+
+steps = [
+    ("center", 1_500_000),
+    ("low", 1_450_000),
+    ("center", 1_500_000),
+    ("high", 1_550_000),
+    ("center", 1_500_000),
+]
+with SysfsPwmChannel(ServoPwmConfig()) as pwm:
+    pwm.enable_center()
+    for name, pulse_ns in steps:
+        pwm.set_pulse_ns(pulse_ns)
+        print(name, pulse_ns, flush=True)
+        time.sleep(2.0)
+PY
+
+# Postcheck
+test -e /dev/video1
+test -e /dev/nvme0
+test ! -d /sys/class/pwm/pwmchip3/pwm0
+dmesg --since '2026-07-20 23:46:00'
+
+# Repeat low/high direction checks through the same bounded project core
+# (full inline scripts and timestamps are preserved in logs/run2..run4)
+PYTHONPATH=/root/lubanvision/ros2_ws/src/lubanvision_hardware python3 <bounded-direction-probe>
+
+# Sync and test the provisional angle mapping on WSL and RK
+scp -P 2222 \
+  ros2_ws/src/lubanvision_hardware/lubanvision_hardware/servo_calibration.py \
+  liu@192.168.2.100:/home/liu/lubanvision/ros2_ws/src/lubanvision_hardware/lubanvision_hardware/servo_calibration.py
+scp -P 2222 \
+  ros2_ws/src/lubanvision_hardware/test/test_servo_calibration.py \
+  liu@192.168.2.100:/home/liu/lubanvision/ros2_ws/src/lubanvision_hardware/test/test_servo_calibration.py
+scp \
+  ros2_ws/src/lubanvision_hardware/lubanvision_hardware/servo_calibration.py \
+  root@192.168.2.120:/root/lubanvision/ros2_ws/src/lubanvision_hardware/lubanvision_hardware/servo_calibration.py
+scp \
+  ros2_ws/src/lubanvision_hardware/test/test_servo_calibration.py \
+  root@192.168.2.120:/root/lubanvision/ros2_ws/src/lubanvision_hardware/test/test_servo_calibration.py
+sha256sum \
+  ros2_ws/src/lubanvision_hardware/lubanvision_hardware/servo_calibration.py \
+  ros2_ws/src/lubanvision_hardware/test/test_servo_calibration.py
+
+# Run the following sequence on both WSL and RK after sourcing
+# /opt/ros/humble/setup.bash; target workspaces were respectively
+# /home/liu/lubanvision/ros2_ws and /root/lubanvision/ros2_ws.
+colcon build --symlink-install --packages-select lubanvision_hardware
+colcon test --packages-select lubanvision_hardware --event-handlers console_cohesion+
+colcon test-result --test-result-base build/lubanvision_hardware --verbose
+colcon test --event-handlers console_cohesion+
+colcon test-result --verbose
+
+# Local checks
+python3 -m compileall -q ros2_ws/src/lubanvision_hardware/lubanvision_hardware \
+  ros2_ws/src/lubanvision_hardware/test
+ruby -e "require 'yaml'; Dir['config/**/*.yaml'].each { |path| YAML.safe_load(File.read(path), [], [], false) }"
+./scripts/test.sh

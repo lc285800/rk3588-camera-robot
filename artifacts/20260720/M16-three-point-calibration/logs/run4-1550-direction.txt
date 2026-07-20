@@ -1,0 +1,30 @@
+[purpose]
+Check the 1.55ms direction from a known 1.50ms center.
+
+[action]
+step=center pulse_ns=1500000 time=2026-07-20T23:50:36.004740+08:00
+step=observe_1550 pulse_ns=1550000 time=2026-07-20T23:50:38.007287+08:00
+step=center pulse_ns=1500000 time=2026-07-20T23:50:41.010833+08:00
+step=closed time=2026-07-20T23:50:43.013479+08:00
+action_exit=0
+
+[parallel monitor]
+uptime_start=4781.92
+uptime_end=4789.98
+temperature_min_mC=34230
+temperature_max_mC=36076
+monitor_exit=0
+
+[postcheck]
+time=2026-07-20T23:50:58+08:00
+boot_id=6c6b3ddd-f0bc-4e19-8556-087ef400fc17
+uptime=4804.22
+camera=present
+nvme=present
+eth0=UP,LOWER_UP
+pwm0=unexported
+new_kernel_messages=none
+
+[physical observation]
+User observed a small right turn at 1.55ms, followed by a left turn back to
+the center position at 1.50ms, then no further motion after PWM cleanup.

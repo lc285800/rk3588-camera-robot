@@ -1,0 +1,30 @@
+[purpose]
+Repeat the isolated 1.45ms direction check at the user's request.
+
+[action]
+step=center pulse_ns=1500000 time=2026-07-20T23:49:14.727354+08:00
+step=observe_1450 pulse_ns=1450000 time=2026-07-20T23:49:16.729885+08:00
+step=center pulse_ns=1500000 time=2026-07-20T23:49:19.731069+08:00
+step=closed time=2026-07-20T23:49:21.733714+08:00
+action_exit=0
+
+[parallel monitor]
+uptime_start=4700.62
+uptime_end=4708.66
+temperature_min_mC=34230
+temperature_max_mC=36076
+monitor_exit=0
+
+[postcheck]
+time=2026-07-20T23:49:36+08:00
+boot_id=6c6b3ddd-f0bc-4e19-8556-087ef400fc17
+uptime=4722.39
+camera=present
+nvme=present
+eth0=UP,LOWER_UP
+pwm0=unexported
+new_kernel_messages=none
+
+[physical observation]
+User observed a small left turn at 1.45ms, followed by a right turn back to
+the center position at 1.50ms, then no further motion after PWM cleanup.

@@ -1,0 +1,37 @@
+[precheck]
+time=2026-07-20T23:45:57+08:00
+boot_id=6c6b3ddd-f0bc-4e19-8556-087ef400fc17
+uptime=4503.40
+camera=present
+nvme=present
+pwm0=unexported
+sysfs_pwm_sha256=f9dd05b2338d83f4c86651344f93329df3082df99c14d777d2873c3de967bff7
+
+[action]
+step=center pulse_ns=1500000 time=2026-07-20T23:46:10.323644+08:00
+step=low pulse_ns=1450000 time=2026-07-20T23:46:12.326181+08:00
+step=center pulse_ns=1500000 time=2026-07-20T23:46:14.327741+08:00
+step=high pulse_ns=1550000 time=2026-07-20T23:46:16.330264+08:00
+step=center pulse_ns=1500000 time=2026-07-20T23:46:18.332793+08:00
+step=closed time=2026-07-20T23:46:20.334508+08:00
+action_exit=0
+
+[parallel monitor]
+uptime_start=4516.20
+uptime_end=4527.25
+temperature_min_mC=33307
+temperature_max_mC=34230
+monitor_exit=0
+
+[postcheck]
+time=2026-07-20T23:46:35+08:00
+boot_id=6c6b3ddd-f0bc-4e19-8556-087ef400fc17
+uptime=4541.55
+camera=present
+nvme=present
+eth0=UP,LOWER_UP
+pwm0=unexported
+new_kernel_messages=none
+
+[physical observation]
+Pending user confirmation of the low/high pulse directions.

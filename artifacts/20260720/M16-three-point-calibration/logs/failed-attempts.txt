@@ -1,0 +1,15 @@
+[local YAML validation]
+command: python3 -c 'import yaml'
+exit: 1
+result: ModuleNotFoundError: No module named 'yaml'
+decision: do not install ad-hoc Mac dependencies; use the established WSL/RK ROS environments.
+
+[impact]
+Python compileall completed before this failure. The chained scripts/test.sh invocation did not run in
+that attempt, so it was rerun separately and passed. WSL/RK package and full-workspace tests are the
+formal validation results.
+
+[local Ruby YAML validation compatibility]
+first command used Psych.safe_load_file, which is unavailable in the installed Ruby/Psych version and
+exited before parsing. The retry used Psych.safe_load(File.read(path), [], [], false) and passed for all
+platform YAML files. This was a validator API compatibility issue, not a YAML content failure.

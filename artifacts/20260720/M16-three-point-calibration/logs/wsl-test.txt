@@ -1,0 +1,14 @@
+[file hashes]
+servo_calibration.py 36aca32d2e7028c6a7c3fbacf67e8f2419f3fb0a812e41949c7c82e7f9375500
+test_servo_calibration.py cd86c7a413d9c9a2a1ee4331e192c7cdbf0870ec07fc519ee76c87517c8e4fbd
+
+[hardware package]
+collected 38 items
+test/test_servo_calibration.py ...............
+test/test_sysfs_pwm.py ....................
+38 passed, 2 warnings in 0.67s
+Summary: 38 tests, 0 errors, 0 failures, 0 skipped
+
+[full workspace]
+Summary: 4 packages finished
+Summary: 82 tests, 0 errors, 0 failures, 0 skipped

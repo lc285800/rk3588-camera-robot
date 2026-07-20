@@ -1,0 +1,13 @@
+Date: 2026-07-20 Asia/Shanghai
+Starting commit: 805d088
+Git sync: main == origin/main before M16 start
+Target: lubancat, arm64, Ubuntu 22.04, kernel 6.1.84
+Boot ID: 6c6b3ddd-f0bc-4e19-8556-087ef400fc17
+Board input: temporary 12V 1.5A
+Servo supply: temporary board-shared 40Pin 5V
+Servo: one SG90
+PWM: pwmchip3/pwm0, 20ms period, physical Pin 32 / PWM13_M1
+Scope: repeat only 1.45/1.50/1.55ms; no expanded range or automatic sweep
+WSL: Ubuntu 22.04, ROS 2 Humble, Python 3.10.12, pytest 6.2.5
+RK test state: pwmchip3/pwm0 unexported before and after tests
+Local limitation: macOS system Python has no PyYAML or pytest; no dependency installed

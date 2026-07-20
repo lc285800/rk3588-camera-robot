@@ -1,0 +1,38 @@
+[purpose]
+Repeat only the 1.45ms point from a known 1.50ms center so the user can
+identify its physical direction.
+
+[precheck]
+time=2026-07-20T23:48:02+08:00
+boot_id=6c6b3ddd-f0bc-4e19-8556-087ef400fc17
+uptime=4628.17
+camera=present
+nvme=present
+pwm0=unexported
+
+[action]
+step=center pulse_ns=1500000 time=2026-07-20T23:48:14.002411+08:00
+step=observe_1450 pulse_ns=1450000 time=2026-07-20T23:48:16.004949+08:00
+step=center pulse_ns=1500000 time=2026-07-20T23:48:19.008473+08:00
+step=closed time=2026-07-20T23:48:21.011171+08:00
+action_exit=0
+
+[parallel monitor]
+uptime_start=4639.90
+uptime_end=4647.94
+temperature_min_mC=33307
+temperature_max_mC=35153
+monitor_exit=0
+
+[postcheck]
+time=2026-07-20T23:48:34+08:00
+boot_id=6c6b3ddd-f0bc-4e19-8556-087ef400fc17
+uptime=4660.21
+camera=present
+nvme=present
+eth0=UP,LOWER_UP
+pwm0=unexported
+new_kernel_messages=none
+
+[physical observation]
+Superseded by the clearer repeated observation in run3.

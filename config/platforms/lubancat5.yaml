@@ -14,5 +14,11 @@ platform:
     center_ns: 1500000
     min_pulse_ns: 1450000
     max_pulse_ns: 1550000
-    calibration_status: provisional_smoke_only
+    calibration_status: provisional_three_point
     enabled_by_default: false
+    nominal_angle:
+      min_deg: 85.0
+      center_deg: 90.0
+      max_deg: 95.0
+      pulse_per_degree_ns: 10000.0
+      increasing_pulse_direction: right

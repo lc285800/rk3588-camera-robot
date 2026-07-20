@@ -43,8 +43,9 @@ Mac和Windows断开后，机器人仍能在鲁班猫5上独立运行。第一阶
 `lubanvision_camera_cpp`提供M06验收使用的低开销V4L2相机发布和速率探针，不依赖
 `cv_bridge`或OpenCV开发包。`lubanvision_interfaces`提供目标观测消息；
 `lubanvision_control`提供ROS无关的PID、目标丢失状态机和模拟云台闭环；
-`lubanvision_hardware`提供默认禁用、严格脉宽限位和异常清理的sysfs PWM核心。描述和
-bringup包按半小时任务卡逐步建立。
+`lubanvision_hardware`提供默认禁用、严格脉宽限位、异常清理的sysfs PWM核心，以及M16
+三点观察建立的临时角度映射。该映射仅覆盖1.45/1.50/1.55ms和名义85/90/95度，不能替代
+升级供电后的机械量角与安全边界验收。描述和bringup包按半小时任务卡逐步建立。
 
 ## 文档
 

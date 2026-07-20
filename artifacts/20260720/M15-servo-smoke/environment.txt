@@ -1,0 +1,11 @@
+Date: 2026-07-20 Asia/Shanghai
+Board: Embedfire LubanCat-5 V1 / EBF410149V1R0
+Host: lubancat
+Kernel: 6.1.84 aarch64
+Device tree: rk3588-lubancat-5.dtb
+Overlay: rk3588-lubancat-pwm13-m1-overlay
+PWM: pwmchip3/pwm0 -> febf0010.pwm -> physical Pin 32 / GPIO4_B6 / PWM13_M1
+Servo: one SG90, powered temporarily from the board 40Pin 5V rail
+Board input supply: 12V 1.5A
+Other attached devices: USB camera, Ethernet, CPU fan, Mini-PCIe Wi-Fi, M.2 NVMe SSD
+Boot ID during test: 6c6b3ddd-f0bc-4e19-8556-087ef400fc17

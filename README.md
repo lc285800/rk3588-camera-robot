@@ -56,3 +56,4 @@ bringup包按半小时任务卡逐步建立。
 - [RK3588 ROS 2安装与验证记录](docs/07_rk_ros2_install.md)
 - [RK3588 Clash代理与ROS下载记录](docs/rk3588_clash_proxy_ros.md)
 - [半小时任务执行手册](docs/08_execution_playbook.md)
+- [鲁班猫5 V1硬件参考资料](硬件_鲁班猫5/README.md)

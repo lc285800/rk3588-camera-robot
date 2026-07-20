@@ -1,0 +1,42 @@
+# Read-only precheck
+ssh root@192.168.2.120 '
+  cat /proc/uptime
+  test -e /dev/video1
+  test -e /dev/nvme0
+  ip -brief link show eth0
+  test ! -d /sys/class/pwm/pwmchip3/pwm0
+'
+
+# Conservative SG90 smoke sequence on PWM13_M1
+cleanup() {
+  if test -d /sys/class/pwm/pwmchip3/pwm0; then
+    echo 0 > /sys/class/pwm/pwmchip3/pwm0/enable || true
+    echo 0 > /sys/class/pwm/pwmchip3/unexport || true
+  fi
+}
+trap cleanup EXIT INT TERM
+echo 0 > /sys/class/pwm/pwmchip3/export
+echo 20000000 > /sys/class/pwm/pwmchip3/pwm0/period
+echo 1500000 > /sys/class/pwm/pwmchip3/pwm0/duty_cycle
+echo normal > /sys/class/pwm/pwmchip3/pwm0/polarity
+echo 1 > /sys/class/pwm/pwmchip3/pwm0/enable
+sleep 1
+echo 1450000 > /sys/class/pwm/pwmchip3/pwm0/duty_cycle
+sleep 1
+echo 1500000 > /sys/class/pwm/pwmchip3/pwm0/duty_cycle
+sleep 1
+echo 1550000 > /sys/class/pwm/pwmchip3/pwm0/duty_cycle
+sleep 1
+echo 1500000 > /sys/class/pwm/pwmchip3/pwm0/duty_cycle
+sleep 1
+echo 0 > /sys/class/pwm/pwmchip3/pwm0/enable
+echo 0 > /sys/class/pwm/pwmchip3/unexport
+
+# Postcheck
+ssh root@192.168.2.120 '
+  cat /proc/uptime
+  test -e /dev/video1
+  test -e /dev/nvme0
+  ip -brief link show eth0
+  test ! -d /sys/class/pwm/pwmchip3/pwm0
+'

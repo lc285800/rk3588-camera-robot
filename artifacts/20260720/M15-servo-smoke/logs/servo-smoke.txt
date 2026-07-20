@@ -1,0 +1,42 @@
+M15 SG90 hardware smoke test
+Date: 2026-07-20 Asia/Shanghai
+
+[precheck]
+time=2026-07-20T22:56:31+08:00
+uptime=1537.06
+temperature_mC=34230
+camera=/dev/video1:present
+nvme=/dev/nvme0:present
+eth0=UP,LOWER_UP
+pwmchip3_pwm0=unexported
+
+[action]
+step=center duty_ns=1500000 time=2026-07-20T22:56:57+08:00
+step=left_small duty_ns=1450000 time=2026-07-20T22:56:58+08:00
+step=center duty_ns=1500000 time=2026-07-20T22:56:59+08:00
+step=right_small duty_ns=1550000 time=2026-07-20T22:57:00+08:00
+step=center duty_ns=1500000 time=2026-07-20T22:57:01+08:00
+step=disabled time=2026-07-20T22:57:02+08:00
+action_exit=0
+
+[parallel monitor]
+monitor=1 uptime=1562.17 temperature_mC=35153
+monitor=2 uptime=1563.18 temperature_mC=33307
+monitor=3 uptime=1564.18 temperature_mC=33307
+monitor=4 uptime=1565.19 temperature_mC=33307
+monitor=5 uptime=1566.19 temperature_mC=33307
+monitor=6 uptime=1567.20 temperature_mC=34230
+monitor=7 uptime=1568.21 temperature_mC=33307
+monitor_exit=0
+
+[postcheck]
+time=2026-07-20T22:57:14+08:00
+uptime=1579.77
+camera=/dev/video1:present
+nvme=/dev/nvme0:present
+eth0=UP,LOWER_UP
+pwmchip3_pwm0=unexported
+new_kernel_messages=none
+
+[physical observation]
+User confirmed visible slight servo rotation after the test.

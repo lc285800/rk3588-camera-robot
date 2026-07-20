@@ -1,0 +1,8 @@
+git status -sb
+git log -3 --oneline --decorate
+git rev-list --left-right --count origin/main...HEAD
+rg -n "M15|M16|1.45|1.55|38项|82项|当前恢复点" \
+  README.md docs/02_design.md docs/03_progress_status.md \
+  docs/04_issue_log.md docs/05_test_plan.md docs/08_execution_playbook.md
+git diff --check
+./scripts/test.sh

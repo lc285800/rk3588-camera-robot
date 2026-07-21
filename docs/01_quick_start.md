@@ -30,6 +30,18 @@ scripts/m17_live_acceptance.sh 20 30
 `M17_OUTPUT_LIMIT`、`M17_DELTA_LIMIT`和`M17_DIRECTION`环境变量只用于有记录的调参试验。
 当前安装经静止目标A/B确认必须使用默认`direction=-1`。
 
+复现M17最终引导式测试配置时，必须由现场人员看护，并使用独立证据目录：
+
+```bash
+M17_DIRECTION=-1.0 M17_KP=6.0 M17_OUTPUT_LIMIT=5.0 \
+M17_DELTA_LIMIT=0.75 scripts/m17_live_acceptance.sh \
+  45 10 /root/lubanvision/artifacts/$(date +%Y%m%d)/M17-guided-repeat 20
+```
+
+`20`表示以90度为中心的半范围，即70-110度测试边界。脚本会先要求连续检测，再重复发布启用
+并从`/gimbal/state`确认成功；未出现`Tracking enable confirmation: OK`时不得移动标记。
+M17已经完成，普通恢复工作应从M18开始，不需要无目的重复舵机测试。
+
 WSL的Linux用户固定为`liu`；不要使用Mac用户名`evanliu`。Mac公钥位于默认
 `~/.ssh/id_ed25519`，已安装到`/home/liu/.ssh/authorized_keys`。如果端口可连接但公钥被
 拒绝，先核对远端用户名，再检查WSL中的`sshd`和`authorized_keys`权限。

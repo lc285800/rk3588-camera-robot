@@ -1,0 +1,6 @@
+git status -sb
+rg -n 'M17|当前任务|下一任务|进行中|部分通过' README.md docs config/platforms/lubancat5.yaml
+bash -n scripts/m17_live_acceptance.sh
+git diff --check
+# WSL and RK control/hardware regression already recorded for the same code:
+# 90 tests, 0 errors, 0 failures, 0 skipped on each architecture.

@@ -1,0 +1,6 @@
+Date: 2026-07-21 Asia/Shanghai
+Branch: main
+Baseline before documentation sync: 9044cf6
+Remote: https://github.com/lc285800/rk3588-camera-robot.git
+M17 final evidence: artifacts/20260721/M17-guided-live-acceptance/
+Next implementation task: M18 hardware fault injection

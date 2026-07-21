@@ -47,3 +47,15 @@ platform:
       integral_limit: 0.0
       output_limit_deg_sec: 3.0
       delta_limit_deg_sec: 0.5
+    validated_live_test_profile:
+      min_angle_deg: 70.0
+      center_angle_deg: 90.0
+      max_angle_deg: 110.0
+      min_pulse_ns: 1700000
+      center_pulse_ns: 1900000
+      max_pulse_ns: 2100000
+      kp: 6.0
+      output_limit_deg_sec: 5.0
+      delta_limit_deg_sec: 0.75
+      direction: -1.0
+      status: basic_tracking_passed

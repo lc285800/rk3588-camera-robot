@@ -1,0 +1,11 @@
+# Detection-only alignment
+# 3-second OpenCV check after moving the phone farther away and reducing
+# brightness: 81/81 frames detected ID 23, mean X error 0.0427.
+
+# Guided final run on root@192.168.2.120
+M17_DIRECTION=-1.0 M17_KP=6.0 M17_OUTPUT_LIMIT=5.0 \
+M17_DELTA_LIMIT=0.75 scripts/m17_live_acceptance.sh 45 10 \
+  /root/lubanvision/artifacts/20260721/M17-live-guided-final 20
+
+# The model issued timed user instructions only after gimbal state confirmed
+# enabled: center, left 5cm and hold, center and hold, right 5cm and hold.

@@ -1,0 +1,14 @@
+
+Files:             rosbag_0.db3
+Bag size:          664.6 MiB
+Storage id:        sqlite3
+Duration:          53.199920011s
+Start:             Jul 21 2026 23:33:27.332033625 (1784648007.332033625)
+End:               Jul 21 2026 23:34:20.531953636 (1784648060.531953636)
+Messages:          2524
+Topic information: Topic: /tracking/enabled | Type: std_msgs/msg/Bool | Count: 8 | Serialization Format: cdr
+                   Topic: /target/observation | Type: lubanvision_interfaces/msg/TargetObservation | Count: 704 | Serialization Format: cdr
+                   Topic: /target/debug_image | Type: sensor_msgs/msg/Image | Count: 46 | Serialization Format: cdr
+                   Topic: /gimbal/state | Type: std_msgs/msg/String | Count: 1057 | Serialization Format: cdr
+                   Topic: /camera/image_raw | Type: sensor_msgs/msg/Image | Count: 709 | Serialization Format: cdr
+

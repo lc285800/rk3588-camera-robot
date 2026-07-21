@@ -1,0 +1,9 @@
+Date: 2026-07-21 Asia/Shanghai
+RK: root@192.168.2.120, lubancat, ROS 2 Humble
+Hardware: USB camera rigidly mounted to SG90 Pan axis
+Marker: DICT_4X4_50 ID 23 displayed on phone, brightness about 50 percent
+Tracking: direction -1, 70-110 degree bounds, center 90 degrees
+Control: Kp 6.0, output limit 5 deg/s, delta limit 0.75
+ROS_DOMAIN_ID: 20
+Full rosbag location: /root/lubanvision/artifacts/20260721/M17-live-guided-final/rosbag
+Full rosbag size: 664.6 MiB (not copied into Git)

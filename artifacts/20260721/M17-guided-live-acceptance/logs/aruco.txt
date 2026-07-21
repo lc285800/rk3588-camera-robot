@@ -1,0 +1,38 @@
+[INFO] [1784648012.593351312] [aruco_detector]: stats frames=72 detections=72 errors=0 fps=14.30 p95_ms=94.04
+[INFO] [1784648017.662097205] [aruco_detector]: stats frames=135 detections=135 errors=0 fps=13.34 p95_ms=167.42
+[INFO] [1784648022.663053643] [aruco_detector]: stats frames=210 detections=210 errors=0 fps=13.89 p95_ms=167.38
+[INFO] [1784648027.662557347] [aruco_detector]: stats frames=285 detections=285 errors=0 fps=14.16 p95_ms=167.41
+[INFO] [1784648032.648206585] [aruco_detector]: stats frames=360 detections=360 errors=0 fps=14.34 p95_ms=167.45
+[INFO] [1784648037.648019949] [aruco_detector]: stats frames=435 detections=435 errors=0 fps=14.45 p95_ms=167.37
+[INFO] [1784648042.572765211] [aruco_detector]: stats frames=507 detections=507 errors=0 fps=14.47 p95_ms=167.19
+[INFO] [1784648047.572777412] [aruco_detector]: stats frames=546 detections=507 errors=0 fps=13.64 p95_ms=167.34
+[INFO] [1784648052.609530185] [aruco_detector]: stats frames=585 detections=530 errors=0 fps=12.98 p95_ms=167.34
+[INFO] [1784648057.593291422] [aruco_detector]: stats frames=660 detections=605 errors=0 fps=13.19 p95_ms=166.93
+[INFO] [1784648062.579291606] [aruco_detector]: stats frames=735 detections=680 errors=0 fps=13.35 p95_ms=165.70
+Traceback (most recent call last):
+  File "/root/lubanvision/ros2_ws/install/lubanvision_vision/lib/lubanvision_vision/aruco_detector", line 33, in <module>
+    sys.exit(load_entry_point('lubanvision-vision', 'console_scripts', 'aruco_detector')())
+  File "/root/lubanvision/ros2_ws/build/lubanvision_vision/lubanvision_vision/aruco_node.py", line 182, in main
+    rclpy.spin(node)
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+    executor.spin_once()
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+    self._spin_once_impl(timeout_sec)
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 805, in _spin_once_impl
+    raise handler.exception()
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
+    result = coro.send(None)
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
+    await call_coroutine(entity, arg)
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 407, in _execute_subscription
+    await await_or_execute(sub.callback, msg)
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
+    return callback(*args)
+  File "/root/lubanvision/ros2_ws/build/lubanvision_vision/lubanvision_vision/aruco_node.py", line 135, in _on_image
+    self._publish_debug_image(message, image, result)
+  File "/root/lubanvision/ros2_ws/build/lubanvision_vision/lubanvision_vision/aruco_node.py", line 161, in _publish_debug_image
+    self._debug_publisher.publish(output)
+  File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/publisher.py", line 70, in publish
+    self.__publisher.publish(msg)
+rclpy._rclpy_pybind11.RCLError: Failed to publish: publisher's context is invalid, at ./src/rcl/publisher.c:389
+[ros2run]: Process exited with failure 1

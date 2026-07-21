@@ -65,7 +65,8 @@ stop_group() {
 cleanup() {
   local group_pid
   set +e
-  timeout 2s ros2 topic pub --once /tracking/enabled std_msgs/msg/Bool \
+  timeout 3s ros2 topic pub -r 5 -t 3 -w 1 \
+    /tracking/enabled std_msgs/msg/Bool \
     '{data: false}' >/dev/null 2>&1 || true
   sleep 1
   for group_pid in "${PROCESS_GROUPS[@]}"; do
@@ -236,10 +237,37 @@ PY
 METRICS_GROUP="$!"
 PROCESS_GROUPS+=("$METRICS_GROUP")
 
-ros2 topic pub --once /tracking/enabled std_msgs/msg/Bool '{data: true}'
+ros2 topic pub -r 5 -t 5 -w 2 \
+  /tracking/enabled std_msgs/msg/Bool '{data: true}'
+python3 - <<'PY'
+import json
+import time
+
+import rclpy
+from std_msgs.msg import String
+
+rclpy.init()
+node = rclpy.create_node("m17_enable_confirmation")
+enabled = False
+
+def callback(message):
+    global enabled
+    enabled = enabled or bool(json.loads(message.data)["enabled"])
+
+node.create_subscription(String, "/gimbal/state", callback, 10)
+deadline = time.monotonic() + 3.0
+while not enabled and time.monotonic() < deadline:
+    rclpy.spin_once(node, timeout_sec=0.1)
+node.destroy_node()
+rclpy.shutdown()
+if not enabled:
+    raise SystemExit("tracking enable confirmation timed out")
+print("Tracking enable confirmation: OK")
+PY
 echo "Tracking enabled for ${DURATION_SEC}s. Move ID 23 slowly left and right."
 sleep "$DURATION_SEC"
-ros2 topic pub --once /tracking/enabled std_msgs/msg/Bool '{data: false}'
+ros2 topic pub -r 5 -t 3 -w 1 \
+  /tracking/enabled std_msgs/msg/Bool '{data: false}'
 wait "$METRICS_GROUP" || true
 sleep 1
 test ! -e "$PWM_PATH"

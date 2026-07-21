@@ -1,0 +1,20 @@
+{
+  "detected_samples": 533,
+  "faults": [],
+  "final_mean_abs_error_x_norm": 0.03414062540978193,
+  "final_mean_error_x_norm": -0.03414062540978193,
+  "initial_mean_abs_error_x_norm": 0.0669531248509884,
+  "initial_mean_error_x_norm": 0.0669531248509884,
+  "max_abs_error_x_norm": 0.578906238079071,
+  "max_error_x_norm": 0.578906238079071,
+  "mean_abs_error_x_norm": 0.055459955617423756,
+  "min_error_x_norm": -0.08984375,
+  "pulse_max_ns": 1900000,
+  "pulse_min_ns": 1836836,
+  "states": [
+    "disabled",
+    "holding",
+    "returning",
+    "tracking"
+  ]
+}

@@ -64,9 +64,9 @@ def test_default_config_matches_proven_smoke_range():
     config = ServoPwmConfig()
 
     assert config.period_ns == 20_000_000
-    assert config.center_ns == 1_500_000
-    assert config.min_pulse_ns == 1_450_000
-    assert config.max_pulse_ns == 1_550_000
+    assert config.center_ns == 1_900_000
+    assert config.min_pulse_ns == 1_850_000
+    assert config.max_pulse_ns == 1_950_000
 
 
 @pytest.mark.parametrize(
@@ -75,8 +75,8 @@ def test_default_config_matches_proven_smoke_range():
         {"pwmchip": -1},
         {"channel": -1},
         {"min_pulse_ns": 0},
-        {"min_pulse_ns": 1_510_000},
-        {"max_pulse_ns": 1_490_000},
+        {"min_pulse_ns": 1_910_000},
+        {"max_pulse_ns": 1_890_000},
         {"period_ns": 1_550_000},
         {"polarity": "unknown"},
         {"export_timeout_sec": 0.0},
@@ -89,7 +89,7 @@ def test_invalid_config_is_rejected(kwargs):
         ServoPwmConfig(**kwargs)
 
 
-@pytest.mark.parametrize("pulse", [True, 1_500_000.0, 1_449_999, 1_550_001])
+@pytest.mark.parametrize("pulse", [True, 1_900_000.0, 1_849_999, 1_950_001])
 def test_invalid_runtime_pulse_is_rejected(pulse):
     """Non-integer and out-of-range commands never reach sysfs."""
     channel, io = make_channel()
@@ -115,9 +115,9 @@ def test_open_configures_disabled_center_before_enable():
     assert io.writes == [
         ("export", "0"),
         ("period", "20000000"),
-        ("duty_cycle", "1500000"),
+        ("duty_cycle", "1900000"),
         ("polarity", "normal"),
-        ("duty_cycle", "1500000"),
+        ("duty_cycle", "1900000"),
         ("enable", "1"),
     ]
 
@@ -129,7 +129,7 @@ def test_context_disables_and_unexports_after_exception():
     with pytest.raises(RuntimeError, match="application failure"):
         with channel:
             channel.enable_center()
-            channel.set_pulse_ns(1_450_000)
+            channel.set_pulse_ns(1_850_000)
             raise RuntimeError("application failure")
 
     assert not channel.opened
@@ -182,6 +182,6 @@ def test_operations_before_open_fail_without_writes():
     with pytest.raises(RuntimeError, match="not open"):
         channel.enable_center()
     with pytest.raises(RuntimeError, match="not open"):
-        channel.set_pulse_ns(1_500_000)
+        channel.set_pulse_ns(1_900_000)
 
     assert io.writes == []

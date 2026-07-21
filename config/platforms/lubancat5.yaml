@@ -11,10 +11,10 @@ platform:
     pwmchip: 3
     channel: 0
     period_ns: 20000000
-    center_ns: 1500000
-    min_pulse_ns: 1450000
-    max_pulse_ns: 1550000
-    calibration_status: provisional_three_point
+    center_ns: 1900000
+    min_pulse_ns: 1850000
+    max_pulse_ns: 1950000
+    calibration_status: observed_short_hold
     enabled_by_default: false
     nominal_angle:
       min_deg: 85.0
@@ -22,6 +22,15 @@ platform:
       max_deg: 95.0
       pulse_per_degree_ns: 10000.0
       increasing_pulse_direction: right
+    observed_short_hold_calibration:
+      min_pulse_ns: 1000000
+      min_angle_deg: 0.0
+      center_pulse_ns: 1900000
+      center_angle_deg: 90.0
+      max_tested_pulse_ns: 2500000
+      max_observed_angle_deg: 150.0
+      position_servo_not_continuous: true
+      measurement_method: hand_held_visual_estimate
   tracking:
     enabled_by_default: false
     target_id: 23

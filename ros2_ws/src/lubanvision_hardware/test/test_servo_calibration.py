@@ -23,12 +23,12 @@ from lubanvision_hardware.sysfs_pwm import ServoPwmConfig
 
 
 def test_three_nominal_points_match_observed_pulses():
-    """Map the M16 85/90/95 points to the three tested pulse values."""
+    """Map 85/90/95 degrees around the observed 1.90ms center."""
     calibration = ServoCalibration()
 
-    assert calibration.angle_to_pulse_ns(85.0) == 1_450_000
-    assert calibration.angle_to_pulse_ns(90.0) == 1_500_000
-    assert calibration.angle_to_pulse_ns(95.0) == 1_550_000
+    assert calibration.angle_to_pulse_ns(85.0) == 1_850_000
+    assert calibration.angle_to_pulse_ns(90.0) == 1_900_000
+    assert calibration.angle_to_pulse_ns(95.0) == 1_950_000
 
 
 def test_default_direction_matches_physical_observation():
@@ -78,8 +78,8 @@ def test_invalid_calibration_is_rejected(kwargs):
 def test_pwm_limits_remain_authoritative():
     """Refuse a mapping that exceeds the independent PWM hard bounds."""
     narrow_pwm = ServoPwmConfig(
-        min_pulse_ns=1_475_000,
-        max_pulse_ns=1_525_000,
+        min_pulse_ns=1_875_000,
+        max_pulse_ns=1_925_000,
     )
 
     with pytest.raises(ValueError, match="pulse_ns"):

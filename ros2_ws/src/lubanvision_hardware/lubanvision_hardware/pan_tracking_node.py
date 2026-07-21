@@ -141,9 +141,9 @@ class PanTrackingNode(Node):
             "pwmchip": 3,
             "pwm_channel": 0,
             "period_ns": 20_000_000,
-            "center_pulse_ns": 1_500_000,
-            "min_pulse_ns": 1_450_000,
-            "max_pulse_ns": 1_550_000,
+            "center_pulse_ns": 1_900_000,
+            "min_pulse_ns": 1_850_000,
+            "max_pulse_ns": 1_950_000,
             "min_angle_deg": 85.0,
             "center_angle_deg": 90.0,
             "max_angle_deg": 95.0,
@@ -222,7 +222,12 @@ class PanTrackingNode(Node):
     def _update(self):
         """Run one bounded control tick and publish compact diagnostics."""
         if not self._enabled:
-            self._publish_state("disabled", 90.0, None, False)
+            self._publish_state(
+                "disabled",
+                self._calibration.center_angle_deg,
+                None,
+                False,
+            )
             return
         now = time.monotonic()
         dt = max(0.001, min(0.1, now - self._last_tick))

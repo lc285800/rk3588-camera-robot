@@ -1,0 +1,7 @@
+Date: 2026-07-21 Asia/Shanghai
+RK: root@192.168.2.120, lubancat, ROS 2 Humble
+PWM: pwmchip3 channel 0, 20ms period
+Servo: blue SG90 held by the user without a camera or mechanical load
+Power caveat: existing temporary board/shared supply; short holds only
+Measurement: user visual estimate, no protractor
+Cleanup: PWM disabled and unexported after every sequence

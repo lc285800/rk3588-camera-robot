@@ -27,9 +27,9 @@ class ServoPwmConfig:
     pwmchip: int = 3
     channel: int = 0
     period_ns: int = 20_000_000
-    center_ns: int = 1_500_000
-    min_pulse_ns: int = 1_450_000
-    max_pulse_ns: int = 1_550_000
+    center_ns: int = 1_900_000
+    min_pulse_ns: int = 1_850_000
+    max_pulse_ns: int = 1_950_000
     polarity: str = "normal"
     export_timeout_sec: float = 1.0
 

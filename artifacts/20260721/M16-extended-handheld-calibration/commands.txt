@@ -1,0 +1,16 @@
+# All commands ran on root@192.168.2.120 using SysfsPwmChannel.
+# Every sequence checked that pwmchip3/pwm0 was absent before and after.
+
+# Reference and direction checks
+1.50ms center; 1.20ms for 3s; return 1.50ms
+1.50ms center; 1.80ms for 3s; return 1.50ms
+
+# Incremental endpoint probes, each followed by return and PWM cleanup
+1.00ms for 1.5s
+2.00ms for 1.5s
+2.20ms for 1s
+2.40ms for 1s
+2.50ms for 1s
+
+# Final isolated position confirmation
+1.90ms for 8s; disable and unexport PWM

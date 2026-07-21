@@ -1,0 +1,7 @@
+Date: 2026-07-21 Asia/Shanghai
+Repository commit before this task: f587fab
+RK: root@192.168.2.120, lubancat, aarch64, ROS 2 Humble
+OpenCV: 4.5.4 with aruco.drawMarker
+Camera: /dev/video1, captured at 640x480
+PWM: pwmchip3 channel 0, not exported before or after the timeout test
+Marker SHA-256: 648e752964dc64868dfd650322e0aa8f03d6342d65f2727fb31703c8a4370138

@@ -16,6 +16,17 @@ ssh -p 2222 liu@192.168.2.100
 ssh root@192.168.2.120
 ```
 
+M17真实单轴验收使用仓库内的ID 23标记
+[`assets/markers/aruco_4x4_50_id23.png`](../assets/markers/aruco_4x4_50_id23.png)。将相机安装为
+画面水平轴与Pan转轴一致，确保云台附近无手、线缆和障碍物；在鲁班猫仓库根目录以root执行：
+
+```bash
+scripts/m17_live_acceptance.sh 20 30
+```
+
+脚本先等待连续5帧识别成功，随后才显式启用20秒跟踪；结束或异常退出都会请求禁用、停止
+本次精确进程组并检查PWM清理。第三个可选参数可指定持久证据目录。
+
 WSL的Linux用户固定为`liu`；不要使用Mac用户名`evanliu`。Mac公钥位于默认
 `~/.ssh/id_ed25519`，已安装到`/home/liu/.ssh/authorized_keys`。如果端口可连接但公钥被
 拒绝，先核对远端用户名，再检查WSL中的`sshd`和`authorized_keys`权限。

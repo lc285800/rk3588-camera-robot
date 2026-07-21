@@ -94,6 +94,7 @@
 | T-CTL-04/M17观测门控 | 2026-07-21 | 通过 | 错误目标、过期/未来时间戳、非法值不驱动；新鲜ID 23观测才进入跟踪，新增8项控制测试通过 |
 | T-SERVO-03/M17合成闭环 | 2026-07-21 | 通过 | 143条状态覆盖tracking/holding/returning/disabled，PWM为1,463,998-1,500,000ns，故障0，默认禁用和结束清理均通过 |
 | T-END-01/M17真实链预检 | 2026-07-21 | 部分通过 | 真实相机与ArUco连续处理900帧约15 FPS、错误0；当前画面ID 23检测0，待标记入镜后完成动态跟踪视频和误差统计 |
+| T-END-01/M17安全门控 | 2026-07-21 | 通过 | 无标记时连续5帧门控在3秒超时后失败关闭，舵机未启用、运行进程无残留、PWM未导出；正式20秒动态验收待相机朝向调整和标记入镜 |
 
 临时远端日志曾写入`/tmp/lubanvision_build.log`、`/tmp/lubanvision_test.log`、
 `/tmp/lubanvision_camera.log`和`/tmp/lubanvision_ros_pub.log`。`/tmp`不是持久日志目录，正式

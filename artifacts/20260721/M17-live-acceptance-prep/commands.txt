@@ -1,0 +1,15 @@
+# Read-only device and camera-view check
+ping -c 1 -W 2 192.168.2.120
+ssh root@192.168.2.120 '<camera, PWM and process idle checks>'
+# OpenCV captured 12 warm-up frames and saved the final 640x480 JPEG.
+
+# Deterministic marker generation and verification
+# OpenCV 4.5.4 drawMarker(DICT_4X4_50, 23, 800) with 100px white border.
+# detectMarkers returned exactly ID 23.
+
+# Script validation and fail-closed test
+bash -n scripts/m17_live_acceptance.sh
+scripts/m17_live_acceptance.sh 5 3 /tmp/m17-timeout-safety-2
+test ! -e /sys/class/pwm/pwmchip3/pwm0
+# Exact process inspection confirmed no camera, detector, tracker, metrics, or
+# rosbag test process remained.

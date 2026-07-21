@@ -1,0 +1,14 @@
+stdin is not a terminal device. Keyboard handling disabled.[INFO] [1784641411.881103704] [rosbag2_recorder]: Press SPACE for pausing/resuming
+[INFO] [1784641411.894345946] [rosbag2_storage]: Opened database '/tmp/m17-timeout-safety-2/rosbag/rosbag_0.db3' for READ_WRITE.
+[INFO] [1784641411.899302314] [rosbag2_recorder]: Listening for topics...
+[INFO] [1784641411.899384211] [rosbag2_recorder]: Event publisher thread: Starting
+[INFO] [1784641411.899587642] [rosbag2_recorder]: Recording...
+[INFO] [1784641412.010808228] [rosbag2_recorder]: Subscribed to topic '/gimbal/state'
+[INFO] [1784641412.117059378] [rosbag2_recorder]: Subscribed to topic '/camera/image_raw'
+[INFO] [1784641412.321378557] [rosbag2_recorder]: Subscribed to topic '/target/debug_image'
+[INFO] [1784641412.324938945] [rosbag2_recorder]: Subscribed to topic '/target/observation'
+[INFO] [1784641419.163675363] [rosbag2_recorder]: Subscribed to topic '/tracking/enabled'
+[INFO] [1784641419.163759018] [rosbag2_recorder]: All requested topics are subscribed. Stopping discovery...
+[INFO] [1784641420.438736465] [rosbag2_cpp]: Writing remaining messages from cache to the bag. It may take a while
+[INFO] [1784641420.662755639] [rosbag2_recorder]: Event publisher thread: Exiting
+[INFO] [1784641420.662948016] [rosbag2_recorder]: Recording stopped

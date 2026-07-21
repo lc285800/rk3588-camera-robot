@@ -1,0 +1,4 @@
+Waiting up to 3s for five consecutive ID 23 detections.
+Keep the marker visible and remove hands/cables from the gimbal path.
+arming failed: five consecutive detections not received
+PWM cleanup: OK

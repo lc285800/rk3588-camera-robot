@@ -22,3 +22,19 @@ platform:
       max_deg: 95.0
       pulse_per_degree_ns: 10000.0
       increasing_pulse_direction: right
+  tracking:
+    enabled_by_default: false
+    target_id: 23
+    update_rate_hz: 20.0
+    observation_timeout_sec: 0.35
+    hold_timeout_sec: 0.75
+    return_rate_deg_sec: 2.0
+    pid:
+      kp: 4.0
+      ki: 0.0
+      kd: 0.15
+      direction: -1.0
+      deadband: 0.03
+      integral_limit: 0.0
+      output_limit_deg_sec: 3.0
+      delta_limit_deg_sec: 0.5

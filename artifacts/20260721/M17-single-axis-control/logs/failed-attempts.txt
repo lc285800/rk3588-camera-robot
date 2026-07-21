@@ -1,0 +1,7 @@
+- The first RK SSH check used the wrong username. The documented `root` account
+  succeeded; no credential was stored in logs or the repository.
+- The first live-chain cleanup function inherited `set -e`; interrupted child
+  exit codes stopped the function before all parents were reaped. Exact PIDs
+  were inspected and sent SIGINT, after which no test process remained and PWM
+  was confirmed unexported. Future cleanup functions must mask expected wait
+  statuses individually.

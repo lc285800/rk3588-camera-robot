@@ -1,0 +1,6 @@
+samples=143
+states=disabled,holding,returning,tracking
+pulse_min=1463998
+pulse_max=1500000
+faults=[]
+final={"angle_deg": 90.0, "enabled": false, "fault": "", "observation_fresh": false, "pulse_ns": null, "state": "disabled"}

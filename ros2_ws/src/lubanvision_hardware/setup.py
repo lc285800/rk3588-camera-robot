@@ -18,4 +18,10 @@ setup(
     description="Safety-bounded hardware primitives for LubanVision.",
     license="Apache-2.0",
     tests_require=["pytest"],
+    entry_points={
+        "console_scripts": [
+            "pan_tracking = "
+            "lubanvision_hardware.pan_tracking_node:main",
+        ],
+    },
 )

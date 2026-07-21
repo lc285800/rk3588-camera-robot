@@ -1,0 +1,9 @@
+Date: 2026-07-21 Asia/Shanghai
+Local repository: /Users/evanliu/Documents/robot
+Baseline commit: a506a84
+Branch: main (two local commits ahead of origin/main before M17)
+WSL: liu@192.168.2.100:2222, DESKTOP-KSDDPU2, x86_64, ROS 2 Humble
+RK: root@192.168.2.120:22, lubancat, aarch64, ROS 2 Humble
+RK camera: /dev/video1
+RK PWM: pwmchip3 channel 0, initially and finally not exported
+M17 bounds: 20ms period, 1.45-1.55ms pulse, nominal 85-95 degrees

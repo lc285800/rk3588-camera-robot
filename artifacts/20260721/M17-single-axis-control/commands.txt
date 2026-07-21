@@ -1,0 +1,25 @@
+# Connectivity and idle-state checks
+python3 tools/network_check.py 192.168.2.100 192.168.2.120
+ssh -p 2222 liu@192.168.2.100 '<ROS, colcon and uptime checks>'
+ssh root@192.168.2.120 '<ROS, camera, PWM and process checks>'
+
+# Build and regression on WSL and RK
+colcon build --symlink-install
+colcon test --event-handlers console_cohesion+
+colcon test-result --verbose
+
+# RK default-disabled smoke
+timeout -s INT 3s ros2 run lubanvision_hardware pan_tracking
+test ! -e /sys/class/pwm/pwmchip3/pwm0
+
+# RK bounded synthetic observation test
+ros2 run lubanvision_hardware pan_tracking
+# A temporary rclpy probe explicitly enabled tracking, published fresh ID 23
+# observations with +0.6 then -0.6 X error, allowed loss handling, and disabled.
+
+# RK live image/vision readiness test (tracking remained disabled)
+ros2 run lubanvision_camera_cpp v4l2_camera_publisher --ros-args \
+  -p device:=/dev/video1 -p width:=640 -p height:=480 \
+  -p fps:=15.0 -p reliability:=reliable
+ros2 run lubanvision_vision aruco_detector --ros-args \
+  -p publish_debug_image:=false

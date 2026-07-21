@@ -1,0 +1,12 @@
+[INFO] [1784640809.129908908] [aruco_detector]: stats frames=75 detections=0 errors=0 fps=14.87 p95_ms=27.31
+[INFO] [1784640814.095032813] [aruco_detector]: stats frames=150 detections=0 errors=0 fps=14.93 p95_ms=26.96
+[INFO] [1784640819.095618004] [aruco_detector]: stats frames=225 detections=0 errors=0 fps=14.95 p95_ms=26.81
+[INFO] [1784640824.094906504] [aruco_detector]: stats frames=300 detections=0 errors=0 fps=14.97 p95_ms=26.81
+[INFO] [1784640829.090424362] [aruco_detector]: stats frames=375 detections=0 errors=0 fps=14.98 p95_ms=26.76
+[INFO] [1784640834.090417183] [aruco_detector]: stats frames=450 detections=0 errors=0 fps=14.98 p95_ms=26.73
+[INFO] [1784640839.090703772] [aruco_detector]: stats frames=525 detections=0 errors=0 fps=14.98 p95_ms=26.72
+[INFO] [1784640844.090678906] [aruco_detector]: stats frames=600 detections=0 errors=0 fps=14.98 p95_ms=26.70
+[INFO] [1784640849.090419447] [aruco_detector]: stats frames=675 detections=0 errors=0 fps=14.99 p95_ms=26.68
+[INFO] [1784640854.090454364] [aruco_detector]: stats frames=750 detections=0 errors=0 fps=14.99 p95_ms=26.66
+[INFO] [1784640859.090372628] [aruco_detector]: stats frames=825 detections=0 errors=0 fps=14.99 p95_ms=27.13
+[INFO] [1784640864.090433706] [aruco_detector]: stats frames=900 detections=0 errors=0 fps=14.99 p95_ms=28.61

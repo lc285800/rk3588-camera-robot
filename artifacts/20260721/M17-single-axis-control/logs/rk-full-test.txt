@@ -1,0 +1,124 @@
+Starting >>> lubanvision_interfaces
+Starting >>> lubanvision_control
+Starting >>> lubanvision_camera_cpp
+Finished <<< lubanvision_camera_cpp [0.76s]
+Finished <<< lubanvision_interfaces [0.81s]
+Starting >>> lubanvision_vision
+Finished <<< lubanvision_control [1.73s]
+Starting >>> lubanvision_hardware
+Finished <<< lubanvision_vision [1.88s]
+Finished <<< lubanvision_hardware [1.65s]
+
+Summary: 5 packages finished [3.72s]
+Starting >>> lubanvision_interfaces
+Starting >>> lubanvision_control
+Starting >>> lubanvision_camera_cpp
+Finished <<< lubanvision_interfaces [0.34s]
+Starting >>> lubanvision_vision
+Finished <<< lubanvision_camera_cpp [0.68s]
+--- output: lubanvision_control
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+cachedir: /root/lubanvision/ros2_ws/build/lubanvision_control/.pytest_cache
+rootdir: /root/lubanvision/ros2_ws/src/lubanvision_control
+plugins: ament-flake8-0.12.15, ament-copyright-0.12.15, ament-pep257-0.12.15, launch-testing-1.0.14, ament-xmllint-0.12.15, ament-lint-0.12.15, launch-testing-ros-0.19.13, cov-3.0.0, colcon-core-0.21.0
+collected 41 items
+
+test/test_copyright.py .                                                 [  2%]
+test/test_flake8.py .                                                    [  4%]
+test/test_pan_tracking.py ........                                       [ 24%]
+test/test_pep257.py .                                                    [ 26%]
+test/test_pid.py .............                                           [ 58%]
+test/test_simulation.py ......                                           [ 73%]
+
+=============================== warnings summary ===============================
+test/test_flake8.py::test_flake8
+test/test_flake8.py::test_flake8
+  Warning: SelectableGroups dict interface is deprecated. Use select.
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+test/test_tracking_state.py ...........                                  [100%]
+- generated xml file: /root/lubanvision/ros2_ws/build/lubanvision_control/pytest.xml -
+======================== 41 passed, 2 warnings in 0.96s ========================
+---
+--- stderr: lubanvision_control
+
+=============================== warnings summary ===============================
+test/test_flake8.py::test_flake8
+test/test_flake8.py::test_flake8
+  Warning: SelectableGroups dict interface is deprecated. Use select.
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+---
+Finished <<< lubanvision_control [1.83s]
+Starting >>> lubanvision_hardware
+--- output: lubanvision_vision
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+cachedir: /root/lubanvision/ros2_ws/build/lubanvision_vision/.pytest_cache
+rootdir: /root/lubanvision/ros2_ws/src/lubanvision_vision
+plugins: ament-flake8-0.12.15, ament-copyright-0.12.15, ament-pep257-0.12.15, launch-testing-1.0.14, ament-xmllint-0.12.15, ament-lint-0.12.15, launch-testing-ros-0.19.13, cov-3.0.0, colcon-core-0.21.0
+collected 11 items
+
+test/test_aruco_detector.py .....                                        [ 45%]
+test/test_aruco_node.py ...                                              [ 72%]
+test/test_copyright.py .                                                 [ 81%]
+test/test_flake8.py .                                                    [ 90%]
+
+=============================== warnings summary ===============================
+test/test_flake8.py::test_flake8
+test/test_flake8.py::test_flake8
+  Warning: SelectableGroups dict interface is deprecated. Use select.
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+test/test_pep257.py .                                                    [100%]
+- generated xml file: /root/lubanvision/ros2_ws/build/lubanvision_vision/pytest.xml -
+======================== 11 passed, 2 warnings in 1.54s ========================
+---
+--- stderr: lubanvision_vision
+
+=============================== warnings summary ===============================
+test/test_flake8.py::test_flake8
+test/test_flake8.py::test_flake8
+  Warning: SelectableGroups dict interface is deprecated. Use select.
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+---
+Finished <<< lubanvision_vision [2.73s]
+--- output: lubanvision_hardware
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-6.2.5, py-1.10.0, pluggy-0.13.0
+cachedir: /root/lubanvision/ros2_ws/build/lubanvision_hardware/.pytest_cache
+rootdir: /root/lubanvision/ros2_ws/src/lubanvision_hardware
+plugins: ament-flake8-0.12.15, ament-copyright-0.12.15, ament-pep257-0.12.15, launch-testing-1.0.14, ament-xmllint-0.12.15, ament-lint-0.12.15, launch-testing-ros-0.19.13, cov-3.0.0, colcon-core-0.21.0
+collected 38 items
+
+test/test_copyright.py .                                                 [  2%]
+test/test_flake8.py .                                                    [  5%]
+test/test_pep257.py .                                                    [  7%]
+test/test_servo_calibration.py ...............                           [ 47%]
+
+=============================== warnings summary ===============================
+test/test_flake8.py::test_flake8
+test/test_flake8.py::test_flake8
+  Warning: SelectableGroups dict interface is deprecated. Use select.
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+test/test_sysfs_pwm.py ....................                              [100%]
+- generated xml file: /root/lubanvision/ros2_ws/build/lubanvision_hardware/pytest.xml -
+======================== 38 passed, 2 warnings in 0.77s ========================
+---
+--- stderr: lubanvision_hardware
+
+=============================== warnings summary ===============================
+test/test_flake8.py::test_flake8
+test/test_flake8.py::test_flake8
+  Warning: SelectableGroups dict interface is deprecated. Use select.
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+---
+Finished <<< lubanvision_hardware [1.70s]
+
+Summary: 5 packages finished [3.88s]
+  3 packages had stderr output: lubanvision_control lubanvision_hardware lubanvision_vision
+Summary: 90 tests, 0 errors, 0 failures, 0 skipped

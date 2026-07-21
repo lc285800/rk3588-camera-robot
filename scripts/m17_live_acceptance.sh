@@ -5,6 +5,11 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DURATION_SEC="${1:-20}"
 ARM_TIMEOUT_SEC="${2:-30}"
 RUN_DIR="${3:-$PROJECT_ROOT/artifacts/$(date +%Y%m%d)/M17-live-acceptance-run}"
+HALF_RANGE_DEG="${4:-5}"
+KP="${M17_KP:-4.0}"
+OUTPUT_LIMIT="${M17_OUTPUT_LIMIT:-3.0}"
+DELTA_LIMIT="${M17_DELTA_LIMIT:-0.5}"
+DIRECTION="${M17_DIRECTION:--1.0}"
 ROS_SETUP="/opt/ros/humble/setup.bash"
 WORKSPACE_SETUP="$PROJECT_ROOT/ros2_ws/install/setup.bash"
 PWM_PATH="/sys/class/pwm/pwmchip3/pwm0"
@@ -15,8 +20,10 @@ if [[ "$(id -u)" -ne 0 ]]; then
   exit 2
 fi
 if [[ ! "$DURATION_SEC" =~ ^[1-9][0-9]*$ ]] || \
-   [[ ! "$ARM_TIMEOUT_SEC" =~ ^[1-9][0-9]*$ ]]; then
-  echo "Duration and arm timeout must be positive integer seconds." >&2
+   [[ ! "$ARM_TIMEOUT_SEC" =~ ^[1-9][0-9]*$ ]] || \
+   [[ ! "$HALF_RANGE_DEG" =~ ^[1-9][0-9]*$ ]] || \
+   (( HALF_RANGE_DEG > 30 )); then
+  echo "Durations and half range must be positive integers; half range <= 30." >&2
   exit 2
 fi
 if [[ ! -f "$ROS_SETUP" || ! -f "$WORKSPACE_SETUP" ]]; then
@@ -44,6 +51,10 @@ source "$ROS_SETUP"
 source "$WORKSPACE_SETUP"
 set -u
 export ROS_DOMAIN_ID=20
+MIN_ANGLE_DEG=$((90 - HALF_RANGE_DEG))
+MAX_ANGLE_DEG=$((90 + HALF_RANGE_DEG))
+MIN_PULSE_NS=$((1900000 - HALF_RANGE_DEG * 10000))
+MAX_PULSE_NS=$((1900000 + HALF_RANGE_DEG * 10000))
 mkdir -p "$RUN_DIR/logs"
 
 stop_group() {
@@ -89,7 +100,17 @@ setsid ros2 run lubanvision_vision aruco_detector --ros-args \
   >"$RUN_DIR/logs/aruco.txt" 2>&1 &
 PROCESS_GROUPS+=("$!")
 
-setsid ros2 run lubanvision_hardware pan_tracking \
+setsid ros2 run lubanvision_hardware pan_tracking --ros-args \
+  -p min_angle_deg:="${MIN_ANGLE_DEG}.0" \
+  -p center_angle_deg:=90.0 \
+  -p max_angle_deg:="${MAX_ANGLE_DEG}.0" \
+  -p min_pulse_ns:="$MIN_PULSE_NS" \
+  -p center_pulse_ns:=1900000 \
+  -p max_pulse_ns:="$MAX_PULSE_NS" \
+  -p kp:="$KP" \
+  -p output_limit:="$OUTPUT_LIMIT" \
+  -p delta_limit:="$DELTA_LIMIT" \
+  -p direction:="$DIRECTION" \
   >"$RUN_DIR/logs/tracking.txt" 2>&1 &
 PROCESS_GROUPS+=("$!")
 
@@ -103,6 +124,9 @@ PROCESS_GROUPS+=("$BAG_GROUP")
 sleep 3
 echo "Waiting up to ${ARM_TIMEOUT_SEC}s for five consecutive ID 23 detections."
 echo "Keep the marker visible and remove hands/cables from the gimbal path."
+echo "Tracking range: ${MIN_ANGLE_DEG}-${MAX_ANGLE_DEG} degrees."
+echo "Control: kp=${KP}, output_limit=${OUTPUT_LIMIT}deg/s, delta_limit=${DELTA_LIMIT}."
+echo "Direction: ${DIRECTION}."
 
 python3 - "$ARM_TIMEOUT_SEC" <<'PY'
 import sys
@@ -159,7 +183,7 @@ def on_observation(message):
     if (message.target_id == 23
             and message.status == TargetObservation.STATUS_DETECTED
             and math.isfinite(message.error_x_norm)):
-        errors.append(abs(float(message.error_x_norm)))
+        errors.append(float(message.error_x_norm))
 
 def on_state(message):
     state = json.loads(message.data)
@@ -178,8 +202,28 @@ while time.monotonic() < deadline:
     rclpy.spin_once(node, timeout_sec=0.1)
 result = {
     "detected_samples": len(errors),
-    "mean_abs_error_x_norm": statistics.fmean(errors) if errors else None,
-    "max_abs_error_x_norm": max(errors) if errors else None,
+    "mean_abs_error_x_norm": (
+        statistics.fmean(abs(error) for error in errors) if errors else None
+    ),
+    "max_abs_error_x_norm": (
+        max(abs(error) for error in errors) if errors else None
+    ),
+    "min_error_x_norm": min(errors) if errors else None,
+    "max_error_x_norm": max(errors) if errors else None,
+    "initial_mean_error_x_norm": (
+        statistics.fmean(errors[:10]) if errors else None
+    ),
+    "final_mean_error_x_norm": (
+        statistics.fmean(errors[-10:]) if errors else None
+    ),
+    "initial_mean_abs_error_x_norm": (
+        statistics.fmean(abs(error) for error in errors[:10])
+        if errors else None
+    ),
+    "final_mean_abs_error_x_norm": (
+        statistics.fmean(abs(error) for error in errors[-10:])
+        if errors else None
+    ),
     "states": sorted(set(states)),
     "pulse_min_ns": min(pulses) if pulses else None,
     "pulse_max_ns": max(pulses) if pulses else None,

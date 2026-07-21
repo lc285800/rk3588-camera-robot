@@ -26,6 +26,9 @@ scripts/m17_live_acceptance.sh 20 30
 
 脚本先等待连续5帧识别成功，随后才显式启用20秒跟踪；结束或异常退出都会请求禁用、停止
 本次精确进程组并检查PWM清理。第三个可选参数可指定持久证据目录。
+第四个可选参数是以90度为中心的半范围，默认5度且最大30度；`M17_KP`、
+`M17_OUTPUT_LIMIT`、`M17_DELTA_LIMIT`和`M17_DIRECTION`环境变量只用于有记录的调参试验。
+当前安装经静止目标A/B确认必须使用默认`direction=-1`。
 
 WSL的Linux用户固定为`liu`；不要使用Mac用户名`evanliu`。Mac公钥位于默认
 `~/.ssh/id_ed25519`，已安装到`/home/liu/.ssh/authorized_keys`。如果端口可连接但公钥被

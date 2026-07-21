@@ -1,0 +1,8 @@
+# A/B runs on root@192.168.2.120
+M17_DIRECTION=1.0 M17_KP=4.0 M17_OUTPUT_LIMIT=3.0 \
+  scripts/m17_live_acceptance.sh 6 10 <plus-output-dir> 20
+M17_DIRECTION=-1.0 M17_KP=4.0 M17_OUTPUT_LIMIT=3.0 \
+  scripts/m17_live_acceptance.sh 6 10 <minus-output-dir> 20
+
+# The first minus attempt failed its five-frame arming gate and did not move.
+# After detection-only repositioning, the retry armed and completed normally.

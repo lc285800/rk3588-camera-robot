@@ -1,0 +1,7 @@
+Date: 2026-07-21 Asia/Shanghai
+RK: root@192.168.2.120, lubancat, ROS 2 Humble
+Mounted hardware: SG90 Pan axis with USB camera rigidly attached
+Marker: DICT_4X4_50 ID 23 displayed on a phone and held stationary
+Test range: 70-110 nominal degrees, observed center 1.90ms
+Controller: Kp 4.0, output limit 3 deg/s, delta limit 0.5
+Cleanup: PWM disabled/unexported and runtime processes absent after each valid run

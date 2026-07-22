@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <stdexcept>
@@ -93,10 +94,16 @@ public:
     height_ = declare_parameter<int>("image_height", 480);
     frame_rate_ = declare_parameter<double>("frame_rate", 15.0);
     stats_interval_sec_ = declare_parameter<double>("stats_interval_sec", 5.0);
+    frame_timeout_sec_ = declare_parameter<double>("frame_timeout_sec", 1.0);
+
+    if (!std::isfinite(frame_timeout_sec_) || frame_timeout_sec_ <= 0.0) {
+      throw std::invalid_argument("frame_timeout_sec must be finite and positive");
+    }
 
     open_device();
     configure_device();
     start_streaming();
+    last_frame_time_ = std::chrono::steady_clock::now();
 
     publisher_ = create_publisher<sensor_msgs::msg::Image>(topic_, make_qos());
     last_stats_time_ = now();
@@ -234,7 +241,10 @@ private:
     timeout.tv_sec = 0;
     timeout.tv_usec = 100000;
     const int ready = select(fd_ + 1, &fds, nullptr, nullptr, &timeout);
-    if (ready <= 0) {
+    if (ready < 0) {
+      throw std::runtime_error("camera select failed: " + std::string(strerror(errno)));
+    }
+    if (ready == 0) {
       return false;
     }
 
@@ -245,9 +255,7 @@ private:
       if (errno == EAGAIN) {
         return false;
       }
-      RCLCPP_ERROR_THROTTLE(
-        get_logger(), *get_clock(), 2000, "VIDIOC_DQBUF failed: %s", strerror(errno));
-      return false;
+      throw std::runtime_error("VIDIOC_DQBUF failed: " + std::string(strerror(errno)));
     }
     return true;
   }
@@ -257,8 +265,16 @@ private:
     v4l2_buffer buffer {};
     if (!dequeue_frame(buffer)) {
       missed_frames_ += 1;
+      const auto no_frame_duration = std::chrono::duration<double>(
+        std::chrono::steady_clock::now() - last_frame_time_).count();
+      if (no_frame_duration >= frame_timeout_sec_) {
+        throw std::runtime_error(
+                "camera frame timeout after " + std::to_string(no_frame_duration) +
+                "s; reconnect " + device_ + " and restart the node");
+      }
       return;
     }
+    last_frame_time_ = std::chrono::steady_clock::now();
 
     sensor_msgs::msg::Image message;
     message.header.stamp = now();
@@ -276,8 +292,7 @@ private:
     published_frames_ += 1;
 
     if (xioctl(fd_, VIDIOC_QBUF, &buffer) < 0) {
-      RCLCPP_ERROR_THROTTLE(
-        get_logger(), *get_clock(), 2000, "VIDIOC_QBUF failed: %s", strerror(errno));
+      throw std::runtime_error("VIDIOC_QBUF failed: " + std::string(strerror(errno)));
     }
   }
 
@@ -306,12 +321,14 @@ private:
   double frame_rate_ = 15.0;
   double camera_rate_ = 15.0;
   double stats_interval_sec_ = 5.0;
+  double frame_timeout_sec_ = 1.0;
   int fd_ = -1;
   bool streaming_ = false;
   std::vector<Buffer> buffers_;
   uint64_t published_frames_ = 0;
   uint64_t last_stats_frames_ = 0;
   uint64_t missed_frames_ = 0;
+  std::chrono::steady_clock::time_point last_frame_time_;
   rclcpp::Time last_stats_time_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;

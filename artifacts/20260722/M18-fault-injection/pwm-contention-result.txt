@@ -1,0 +1,3 @@
+attempts=1
+pwm_enable=0
+result=PASS

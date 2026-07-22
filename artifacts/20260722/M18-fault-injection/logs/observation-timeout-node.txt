@@ -1,0 +1,3 @@
+[INFO] [1784648824.195450358] [pan_tracking]: ready disabled; publish true on /tracking/enabled to move
+[INFO] [1784648826.644259729] [pan_tracking]: tracking enabled at provisional center
+[INFO] [1784648831.030853628] [pan_tracking]: tracking disabled and PWM released

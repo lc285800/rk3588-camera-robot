@@ -40,7 +40,19 @@ M17_DELTA_LIMIT=0.75 scripts/m17_live_acceptance.sh \
 
 `20`表示以90度为中心的半范围，即70-110度测试边界。脚本会先要求连续检测，再重复发布启用
 并从`/gimbal/state`确认成功；未出现`Tracking enable confirmation: OK`时不得移动标记。
-M17已经完成，普通恢复工作应从M18开始，不需要无目的重复舵机测试。
+M17和M18已经完成，普通恢复工作应从M19开始，不需要无目的重复舵机或故障注入测试。
+
+摄像头运行中断开时，发布节点会以非零状态退出并给出V4L2故障；它不会无限轮询失效设备。
+重新接入后先确认稳定设备链接存在，再重启节点：
+
+```bash
+test -c /dev/v4l/by-id/usb-ZC_USB_Camera_200901010001-video-index0
+ros2 run lubanvision_camera_cpp v4l2_camera_publisher --ros-args \
+  -p video_device:=/dev/v4l/by-id/usb-ZC_USB_Camera_200901010001-video-index0 \
+  -p reliability:=reliable
+```
+
+后续M19服务应负责受限重启和结构化日志；在M19完成前不使用无限shell重试循环。
 
 WSL的Linux用户固定为`liu`；不要使用Mac用户名`evanliu`。Mac公钥位于默认
 `~/.ssh/id_ed25519`，已安装到`/home/liu/.ssh/authorized_keys`。如果端口可连接但公钥被

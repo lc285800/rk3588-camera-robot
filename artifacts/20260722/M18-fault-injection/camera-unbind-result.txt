@@ -1,0 +1,4 @@
+fault_exit_code=1
+recovery_exit_code=124
+camera_node=online
+result=PASS

@@ -1,0 +1,2 @@
+[INFO] [1784648787.449038541] [pan_tracking]: ready disabled; publish true on /tracking/enabled to move
+[ERROR] [1784648789.493580371] [pan_tracking]: tracking enable failed: PWM channel is already exported by another owner

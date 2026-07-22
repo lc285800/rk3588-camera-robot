@@ -1,0 +1,8 @@
+Date: 2026-07-22
+Mac workspace: /Users/evanliu/Documents/robot
+WSL: liu@192.168.2.100:2222, ROS 2 Humble and colcon online
+RK: root@192.168.2.120, LubanCat-5, ROS 2 Humble and colcon online
+Camera: /dev/video1, USB interface 6-1:1.0, uvcvideo
+PWM: /sys/class/pwm/pwmchip3, channel 0 idle before and after testing
+Storage: mmcblk1 and nvme0n1 online
+Network: eth0 UP with LOWER_UP

@@ -1,0 +1,7 @@
+publisher: beginning loop
+publishing #1: std_msgs.msg.Bool(data=True)
+
+publishing #2: std_msgs.msg.Bool(data=True)
+
+publishing #3: std_msgs.msg.Bool(data=True)
+

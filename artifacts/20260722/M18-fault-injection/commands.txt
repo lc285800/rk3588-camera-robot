@@ -1,0 +1,19 @@
+# Initial read-only device verification
+python3 tools/network_check.py 192.168.2.100 192.168.2.120
+ssh -p 2222 liu@192.168.2.100 '<ROS, colcon, and sshd checks>'
+ssh root@192.168.2.120 '<ROS, colcon, camera, PWM, NVMe, and link checks>'
+
+# Build and regression after synchronizing the two changed source files
+colcon build --packages-select lubanvision_hardware
+colcon test --packages-select lubanvision_hardware
+colcon build --packages-select lubanvision_camera_cpp lubanvision_hardware
+colcon test --packages-select lubanvision_camera_cpp lubanvision_hardware
+colcon test-result --verbose
+
+# Fault injection cases on RK; full outputs are retained in logs/
+# 1. Export pwmchip3/channel 0 without enabling it, repeatedly request tracking,
+#    verify one refusal, then unexport the test-owned channel.
+# 2. Enable tracking at center, publish fresh zero-error observations for one
+#    second, stop the observation process, and capture state transitions.
+# 3. Run the camera publisher, unbind only uvcvideo interface 6-1:1.0, verify
+#    fatal exit, rebind it, then restart and verify 15 FPS recovery.

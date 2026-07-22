@@ -1,0 +1,5 @@
+[INFO] [1784648911.448420958] [v4l2_camera_publisher]: Camera /dev/video1: 640x480 YUYV camera 30.00 FPS, publishing 15.00 FPS -> /camera/image_raw (reliable)
+[INFO] [1784648912.459454393] [v4l2_camera_publisher]: Published 15 frames in 1.01s (14.84 FPS), total=15, missed=0
+[INFO] [1784648913.459403327] [v4l2_camera_publisher]: Published 15 frames in 1.00s (15.00 FPS), total=30, missed=0
+[INFO] [1784648914.459375303] [v4l2_camera_publisher]: Published 15 frames in 1.00s (15.00 FPS), total=45, missed=0
+[INFO] [1784648914.901049680] [rclcpp]: signal_handler(SIGINT/SIGTERM)

@@ -90,6 +90,7 @@ class PanTrackingNode(Node):
         self._observation_timeout = observation_timeout
         self._channel = None
         self._enabled = False
+        self._enable_requested = False
         self._fault = ""
         self._last_tick = time.monotonic()
         self._last_pulse = None
@@ -170,11 +171,15 @@ class PanTrackingNode(Node):
             self.get_logger().warning(f"ignored invalid observation: {error}")
 
     def _on_enable(self, message):
-        """Open or release PWM in response to an explicit enable command."""
-        if message.data and not self._enabled:
+        """Act once per enable edge so a fault cannot cause a retry loop."""
+        requested = bool(message.data)
+        if requested and not self._enable_requested:
+            self._enable_requested = True
             self._enable_hardware()
-        elif not message.data and self._enabled:
-            self._disable_hardware()
+        elif not requested and self._enable_requested:
+            self._enable_requested = False
+            if self._enabled or self._channel is not None:
+                self._disable_hardware()
 
     def _enable_hardware(self):
         """Acquire PWM and enable it at center, failing closed."""
@@ -258,6 +263,7 @@ class PanTrackingNode(Node):
         message.data = json.dumps(
             {
                 "enabled": self._enabled,
+                "enable_requested": self._enable_requested,
                 "state": state,
                 "angle_deg": round(angle_deg, 4),
                 "pulse_ns": pulse_ns,

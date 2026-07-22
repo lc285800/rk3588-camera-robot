@@ -1,0 +1,3 @@
+[INFO] [1784648877.234699521] [v4l2_camera_publisher]: Camera /dev/video1: 640x480 YUYV camera 30.00 FPS, publishing 15.00 FPS -> /camera/image_raw (reliable)
+[FATAL] [1784648879.803983570] [v4l2_camera_publisher]: VIDIOC_DQBUF failed: No such device
+[ros2run]: Process exited with failure 1

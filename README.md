@@ -55,6 +55,7 @@ Mac和Windows断开后，机器人仍能在鲁班猫5上独立运行。第一阶
 
 ## 文档
 
+- [项目协作规则](AGENTS.md)
 - [快速入门](docs/01_quick_start.md)
 - [系统设计](docs/02_design.md)
 - [项目进展](docs/03_progress_status.md)
